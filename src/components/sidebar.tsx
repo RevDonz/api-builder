@@ -5,14 +5,28 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { DataDummy, ItemProps } from '@/types/collection';
-import { MagnifyingGlassIcon, PlusIcon } from '@radix-ui/react-icons';
+import { cn } from '@/lib/utils';
+import { DataDummy } from '@/types/collection';
+import {
+  MagnifyingGlassIcon,
+  PlusIcon,
+  TriangleDownIcon,
+} from '@radix-ui/react-icons';
+import { Button } from './ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
 interface DataDisplayProps {
-  data: ItemProps[];
+  // data: ItemProps[];
   className?: string;
 }
-export default function Sidebar() {
+export default function Sidebar({ className }: DataDisplayProps) {
   const { item } = DataDummy;
 
   // const DataDisplay = ({ data, className }: DataDisplayProps) => {
@@ -62,9 +76,26 @@ export default function Sidebar() {
   // };
 
   return (
-    <div className='w-64 bg-gray-800 h-full'>
-      <div className='flex justify-between items-center gap-3 mx-3 mb-3'>
-        <div className='flex items-center rounded-md bg-gray-700/50 border hover:border-gray-600 transition p-2'>
+    <div className={cn('bg-gray-800 h-screen', className)}>
+      <div className='h-16 border-b border-gray-700/50 flex items-center'>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild className='mx-3'>
+            <Button variant={'ghost'}>
+              My Workspace <TriangleDownIcon className='ml-3 h-4 w-4' />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem>Billing</DropdownMenuItem>
+            <DropdownMenuItem>Team</DropdownMenuItem>
+            <DropdownMenuItem>Subscription</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div className='flex justify-between items-center gap-3 mx-3 my-3'>
+        <div className='flex items-center rounded-md bg-gray-700/50 border hover:border-gray-600 transition p-2 w-full'>
           <MagnifyingGlassIcon className='mr-2 h-4 w-4 shrink-0 opacity-50' />
           <input
             type='text'
@@ -162,20 +193,20 @@ export default function Sidebar() {
                 </AccordionContent>
               </AccordionItem>
               <button className='flex pl-12 hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500'>
-                <p className='py-1 w-1/4 text-left text-green-500'>GET</p>
-                <p className='py-1 w-3/4 text-left'>Get all Product</p>
+                <p className='py-1 w-7 mr-5 text-left text-green-500'>GET</p>
+                <p className='py-1 text-left'>Get all Product</p>
               </button>
               <button className='flex pl-12 hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500'>
-                <p className='py-1 w-1/4 text-left text-yellow-500'>POST</p>
-                <p className='py-1 w-3/4 text-left'>Add a Product</p>
+                <p className='py-1 w-7 mr-5 text-left text-yellow-500'>POST</p>
+                <p className='py-1 text-left'>Add a Product</p>
               </button>
               <button className='flex pl-12 hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500'>
-                <p className='py-1 w-1/4 text-left text-red-500'>DEL</p>
-                <p className='py-1 w-3/4 text-left'>Delete Product by Id</p>
+                <p className='py-1 w-7 mr-5 text-left text-red-500'>DEL</p>
+                <p className='py-1 text-left'>Delete Product by Id</p>
               </button>
               <button className='flex pl-12 hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500'>
-                <p className='py-1 w-1/4 text-left text-blue-500'>PUT</p>
-                <p className='py-1 w-3/4 text-left'>Update Product by Id</p>
+                <p className='py-1 w-7 mr-5 text-left text-blue-500'>PUT</p>
+                <p className='py-1 text-left flex-none'>Update Product by Id</p>
               </button>
             </AccordionContent>
           </AccordionItem>
