@@ -4,7 +4,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui-workspace/accordion';
+} from '@/components/workspace/ui/accordion';
 import { cn } from '@/lib/utils';
 import { CollectionProps, DataDummy, ItemProps } from '@/types/collection';
 import {
@@ -12,7 +12,7 @@ import {
   PlusIcon,
   TriangleDownIcon,
 } from '@radix-ui/react-icons';
-import { Button } from './ui-workspace/button';
+import { Button } from './workspace/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +20,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui-workspace/dropdown-menu';
+} from './workspace/ui/dropdown-menu';
 
 interface DataDisplayProps {
   data: ItemProps[];
