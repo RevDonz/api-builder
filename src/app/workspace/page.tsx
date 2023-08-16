@@ -1,12 +1,10 @@
-import Layout from '@/components/layout'
-import React from 'react'
+'use client';
 
 const Workspace = () => {
+  
   return (
-    <Layout>
-      <p>Ini halaman workspace tes</p>
-    </Layout>
-  )
-}
+    <p>asd</p>
+  );
+};
 
-export default Workspace
+export default Workspace;
