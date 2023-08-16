@@ -1,7 +1,7 @@
 export type CollectionProps = {
   name: string;
   collectionId: string;
-  item: ItemProps[];
+  items: ItemProps[];
 };
 
 export type ItemProps = {
@@ -22,13 +22,7 @@ export type UrlProps = {
 export const DataDummy: CollectionProps = {
   name: 'TokoSaya',
   collectionId: '12345',
-  item: [
-    {
-      name: 'Login',
-      request: {
-        method: 'POST',
-      },
-    },
+  items: [
     {
       name: 'Products',
       item: [
@@ -42,7 +36,7 @@ export const DataDummy: CollectionProps = {
               },
             },
             {
-              name: 'Get Product by category',
+              name: 'Get Product by Category',
               request: {
                 method: 'GET',
               },
@@ -50,7 +44,7 @@ export const DataDummy: CollectionProps = {
           ],
         },
         {
-          name: 'Get All Products',
+          name: 'Get all Product',
           request: {
             method: 'GET',
           },
@@ -61,56 +55,52 @@ export const DataDummy: CollectionProps = {
             method: 'POST',
           },
         },
+        {
+          name: 'Delete a Product',
+          request: {
+            method: 'DELETE',
+          },
+        },
+        {
+          name: 'Update a Product',
+          request: {
+            method: 'PUT',
+          },
+        },
       ],
     },
     {
       name: 'Posts',
       item: [
         {
-          name: 'Get All Posts',
+          name: 'Get all Post',
           request: {
             method: 'GET',
           },
         },
         {
-          name: 'Add Post',
+          name: 'Get a Single Post',
+          request: {
+            method: 'GET',
+          },
+        },
+        {
+          name: 'Add a Post',
           request: {
             method: 'POST',
           },
         },
         {
-          name: 'Postss',
-          item: [
-            {
-              name: 'Get All Posts',
-              request: {
-                method: 'GET',
-              },
-            },
-            {
-              name: 'Add Post',
-              request: {
-                method: 'POST',
-              },
-            },
-            {
-              name: 'Postsss',
-              item: [
-                {
-                  name: 'Get All Posts',
-                  request: {
-                    method: 'GET',
-                  },
-                },
-                {
-                  name: 'Add Post',
-                  request: {
-                    method: 'POST',
-                  },
-                },
-              ],
-            },
-          ],
+          name: 'Delete a Post',
+          request: {
+            method: 'DELETE',
+          },
+        },
+        {
+          name: 'Update a Post',
+          request: {
+            method: 'PUT',
+          },
         },
       ],
     },
