@@ -23,6 +23,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/navbar.jsx", "src/components/landing page/dropdownMenu.js", "src/components/landing page/section1.jsx", "src/components/landing page/section1.jsx", "src/components/landing page/section4.js"],
   "exclude": ["node_modules"]
 }

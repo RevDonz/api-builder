@@ -6,7 +6,7 @@ export default function Register() {
     <div className='bg-gray-900 text-gray-200 dark'>
       <div className="flex">
         <div className="flex flex-grow mt-10 ml-12">
-          <Image alt="logo" src="/images/logo.png" width={50} height={50}/>
+          <Image alt="logo" src="/logo.png" width={50} height={50}/>
           <span className="mt-3 ml-2">API Builder</span>  
         </div>
       </div>
