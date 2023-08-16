@@ -1,13 +1,18 @@
 'use client';
+
+import Sidebar from '@/components/sidebar';
+import Sidemenu from '@/components/sidemenu';
 import { cn } from '@/lib/utils';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Sidebar from './sidebar';
-import Sidemenu from './sidemenu';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-const Layout = ({ children }: { children: React.ReactNode }) => {
+
+export default function WorkspaceLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [isResizing, setIsResizing] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(256);
@@ -58,7 +63,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       window.removeEventListener('mouseup', stopResizing);
     };
   }, [resize, stopResizing]);
-
   return (
     <div className='bg-gray-900 text-gray-200 dark'>
       <div className='flex flex-row min-h-screen w-screen'>
@@ -77,72 +81,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </div>
         <div className='flex flex-col w-full'>
           <div className='h-16 bg-gray-700 flex items-center'>
-            {/* <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <NavigationMenuLink>Link</NavigationMenuLink>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <NavigationMenuLink>Link</NavigationMenuLink>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link href='/workspace' legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={navigationMenuTriggerStyle()}
-                    >
-                      Documentation
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu> */}
+            
           </div>
-          {/* <Tabs defaultValue={tabs[0].name}>
-            <div className='w-full border-b flex items-center'>
-              <TabsList>
-                {tabs.map((tab, index) => {
-                  return (
-                    <TabsTrigger value={tab.name} asChild key={index}>
-                      <div className='items-center gap-5 group flex'>
-                        <div className='gap-2 flex items-center'>
-                          <p
-                            className={cn(
-                              tab.method === 'GET'
-                                ? 'text-green-500'
-                                : tab.method === 'POST'
-                                ? 'text-yellow-500'
-                                : 'text-red-500'
-                            )}
-                          >
-                            {tab.method}
-                          </p>
-                          <p>{tab.name}</p>
-                        </div>
-                        <button className='rounded-md invisible group-hover:visible flex hover:bg-accent hover:text-accent-foreground h-5 w-5 items-center justify-center'>
-                          <Cross2Icon />
-                        </button>
-                      </div>
-                    </TabsTrigger>
-                  );
-                })}
-              </TabsList>
-            </div>
-            {tabs.map((tab, index) => {
-              return (
-                <TabsContent value={tab.name} key={index} className='p-3'>
-                  <p>{tab.method}</p>
-                  <p>{tab.name}</p>
-                  {children}
-                </TabsContent>
-              );
-            })}
-          </Tabs> */}
+
           <div className='flex border-b'>
             {tabs.map((tab, index) => {
               return (
@@ -181,6 +122,4 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       </div>
     </div>
   );
-};
-
-export default Layout;
+}
