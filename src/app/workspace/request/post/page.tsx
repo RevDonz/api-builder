@@ -1,13 +1,11 @@
-'use client';
 import Layout from '@/components/layout';
 
-const Workspace = () => {
-  
+const RequestPost = () => {
   return (
     <Layout>
-      
+      <p>Ini Post</p>
     </Layout>
   );
 };
 
-export default Workspace;
+export default RequestPost;
