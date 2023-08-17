@@ -37,7 +37,7 @@ const RequestGet = () => {
     minimap: { enabled: false },
     formatOnPaste: true,
     readOnly: true,
-    readOnlyMessage: { value: 'asd' },
+    domReadOnly: true,
   };
 
   return (
