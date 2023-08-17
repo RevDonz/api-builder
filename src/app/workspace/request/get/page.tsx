@@ -1,6 +1,4 @@
 'use client';
-import axios from 'axios';
-
 import { Button } from '@/components/workspace/ui/button';
 import { Input } from '@/components/workspace/ui/input';
 import {
@@ -10,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/workspace/ui/select';
+import Editor from '@monaco-editor/react';
+import axios from 'axios';
 import { useState } from 'react';
 
 const RequestGet = () => {
@@ -17,20 +17,27 @@ const RequestGet = () => {
   const [url, setUrl] = useState('');
   const [response, setResponse] = useState('');
 
-  const sendRequest = (e: React.FormEvent<HTMLFormElement>) => {
+  const sendRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    axios({
+    setResponse('');
+    await axios({
       method: method,
       url: url,
     })
       .then((res) => {
         console.log(res);
-        setResponse(JSON.stringify(res));
+        setResponse(JSON.stringify(res, null, '\t'));
       })
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const options = {
+    minimap: { enabled: false },
+    formatOnPaste: true,
+    readOnly: true,
+    readOnlyMessage: { value: 'asd' },
   };
 
   return (
@@ -63,8 +70,16 @@ const RequestGet = () => {
           send
         </Button>
       </form>
-      
-      <p>{response}</p>
+      <div className='w-full h-96 flex flex-col gap-5 mt-5'>
+        <p>Response</p>
+        <Editor
+          defaultLanguage='json'
+          theme='vs-dark'
+          defaultValue='// some comment'
+          value={response}
+          options={options}
+        />
+      </div>
     </div>
   );
 };
