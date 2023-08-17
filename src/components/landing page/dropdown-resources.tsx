@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui-workspace/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,6 +6,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/workspace/ui/button';
 
 export default function DropdownMenuResources() {
   return (
