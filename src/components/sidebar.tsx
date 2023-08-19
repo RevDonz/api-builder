@@ -59,7 +59,8 @@ export default function Sidebar({ className }: ISidebar) {
         method: item.request?.method,
       };
 
-      setTes((prevState) => [...prevState, newAtom]);
+      if (!tes.some((data) => data.id === item.id))
+        setTes((prevState) => [...prevState, newAtom]);
     };
 
     return data.map((item: ItemProps, index) => {
@@ -93,7 +94,7 @@ export default function Sidebar({ className }: ISidebar) {
       if (item.request)
         return (
           <Link
-            href={`/workspace/request/${item.name}`}
+            href={`/workspace/request/${item.id}`}
             onClick={() => handleTabs(item)}
             key={index}
           >

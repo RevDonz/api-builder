@@ -1,5 +1,6 @@
 'use-client';
 import { cn } from '@/lib/utils';
+import { responseAtom } from '@/store/response';
 import { TabsMenu, tabsAtom } from '@/store/tabs';
 import {
   Cross2Icon,
@@ -7,6 +8,7 @@ import {
   PlusIcon,
 } from '@radix-ui/react-icons';
 import { useAtom } from 'jotai';
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
@@ -22,18 +24,22 @@ const TabRequest = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [tes, setTes] = useAtom(tabsAtom);
+  const [response, setResponse] = useAtom(responseAtom);
 
   const removeTabs = async (data: TabsMenu) => {
     const indexToRemove = tes.findIndex((item) => item.id === data.id);
+
     if (indexToRemove !== -1) {
       const newArray = [...tes];
       newArray.splice(indexToRemove, 1);
       setTes(newArray);
     }
+
     if (indexToRemove !== 0 && tes.length > 1) {
-      router.push(`${tes[indexToRemove - 1].name}`);
+      router.push(`${tes[indexToRemove - 1].id}`);
+      // console.log(tes[indexToRemove - 1].id);
     } else if (indexToRemove === 0 && tes.length > 1) {
-      router.push(`${tes[1].name}`);
+      router.push(`${tes[1].id}`);
     } else {
       router.push(`/workspace`);
     }
@@ -45,11 +51,12 @@ const TabRequest = () => {
         <div className='flex'>
           {tes?.map((data, index) => {
             return (
-              <div
+              <Link
+                href={`/workspace/request/${data.id}`}
                 key={index}
                 className={cn(
                   'items-center gap-5 group flex py-3 px-2 text-sm font-medium bg-gray-900 border-b-2 border-gray-900 text-muted-foreground truncate',
-                  pathname?.startsWith(data?.name as string) &&
+                  pathname?.startsWith(`/workspace/request/${data?.id}`) &&
                     'border-indigo-500 text-foreground'
                 )}
               >
@@ -67,15 +74,18 @@ const TabRequest = () => {
                   >
                     {data?.method}
                   </p>
-                  <p>{index}</p>
+                  <p>{data.name}</p>
                 </div>
                 <button
                   className='rounded-md invisible group-hover:visible flex hover:bg-accent hover:text-accent-foreground h-5 w-5 items-center justify-center'
-                  onClick={() => removeTabs(data)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    removeTabs(data);
+                  }}
                 >
                   <Cross2Icon />
                 </button>
-              </div>
+              </Link>
             );
           })}
           <Separator orientation='vertical' />
@@ -101,6 +111,7 @@ const TabRequest = () => {
               onClick={() => {
                 setTes([]);
                 router.push('/workspace');
+                setResponse('');
               }}
               disabled={tes.length === 0}
             >
