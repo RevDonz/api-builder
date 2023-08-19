@@ -62,13 +62,13 @@ export default function WorkspaceLayout({
                 collapsible
                 minSize={64}
                 defaultSize={360}
-                maxSize={360}
+                maxSize={720}
                 className='px-3'
               >
                 <div className='h-8 w-full border-t mt-auto flex items-center'>
                   <p>Response</p>
                 </div>
-                <div className='h-96 w-full flex flex-col gap-5 mt-3 border-2 border-gray-800 rounded'>
+                <div className='h-[640px] w-full flex flex-col gap-5 mt-3 border-2 border-gray-800 rounded'>
                   <Editor
                     defaultLanguage='json'
                     theme='vs-dark'
