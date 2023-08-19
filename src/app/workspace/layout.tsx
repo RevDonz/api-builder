@@ -18,7 +18,7 @@ export default function WorkspaceLayout({
   const options = {
     minimap: { enabled: false },
     formatOnPaste: true,
-    // readOnly: true,
+    readOnly: true,
     domReadOnly: true,
   };
   const mon = useMonaco();

@@ -11,6 +11,7 @@ import {
 } from '@/components/workspace/ui/select';
 import { responseAtom } from '@/store/response';
 import { DataDummy, ItemProps } from '@/types/collection';
+import { Editor } from '@monaco-editor/react';
 import axios from 'axios';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
@@ -36,7 +37,6 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
         if (item.id === params.slug) {
           setUrl(item.request.url?.raw as string);
           setMethod(item.request.method as string);
-          
         }
       }
     });
@@ -55,6 +55,13 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const options = {
+    minimap: { enabled: false },
+    formatOnPaste: true,
+
+    domReadOnly: true,
   };
 
   useEffect(() => {
@@ -112,7 +119,11 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
         <TabsContent value='params'>Parameter</TabsContent>
         <TabsContent value='authorization'>Auth</TabsContent>
         <TabsContent value='headers'>Headers</TabsContent>
-        <TabsContent value='body'></TabsContent>
+        <TabsContent value='body'>
+          <div className='h-96 w-full flex flex-col gap-5 border-2 border-gray-800 rounded'>
+            <Editor defaultLanguage='json' theme='vs-dark' options={options} />
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   );
