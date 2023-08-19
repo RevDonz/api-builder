@@ -6,12 +6,14 @@ import {
   AccordionTrigger,
 } from '@/components/workspace/ui/accordion';
 import { cn } from '@/lib/utils';
+import { TabsMenu, tabsAtom } from '@/store/tabs';
 import { CollectionProps, DataDummy, ItemProps } from '@/types/collection';
 import {
   MagnifyingGlassIcon,
   PlusIcon,
   TriangleDownIcon,
 } from '@radix-ui/react-icons';
+import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { Button } from './workspace/ui/button';
 import {
@@ -48,7 +50,19 @@ export default function Sidebar({ className }: ISidebar) {
     data: ItemProps[];
     depth: number;
   }) => {
-    return data.map((item, index) => {
+    const [tes, setTes] = useAtom(tabsAtom);
+
+    const handleTabs = (item: ItemProps) => {
+      const newAtom: TabsMenu = {
+        id: item.id,
+        name: item.name,
+        method: item.request?.method,
+      };
+
+      setTes((prevState) => [...prevState, newAtom]);
+    };
+
+    return data.map((item: ItemProps, index) => {
       if (item.item)
         return (
           <AccordionItem value={`items-${item.name}-${index}`} key={index}>
@@ -78,7 +92,10 @@ export default function Sidebar({ className }: ISidebar) {
 
       if (item.request)
         return (
-          <Link href={`/workspace/request/${item.name}`}>
+          <Link
+            href={`/workspace/request/${item.name}`}
+            onClick={() => handleTabs(item)}
+          >
             <button
               className={`flex pl-${
                 4 * (3 + depth)
