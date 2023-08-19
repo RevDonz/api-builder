@@ -99,9 +99,10 @@ export default function Sidebar({ className }: ISidebar) {
             key={index}
           >
             <button
-              className={`flex pl-${
-                4 * (3 + depth)
-              } hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500`}
+              className={cn(
+                'flex hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500',
+                `pl-${4 * (3 + depth)}`
+              )}
               key={index}
             >
               <p

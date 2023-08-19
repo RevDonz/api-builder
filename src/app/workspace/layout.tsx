@@ -39,7 +39,7 @@ export default function WorkspaceLayout({
     <div className='bg-gray-900 text-gray-200 dark'>
       {/* <div className='flex flex-row min-h-screen w-screen'> */}
       <PanelGroup direction='horizontal'>
-        <Panel defaultSize={10} minSize={20} className='flex'>
+        <Panel defaultSize={21} className='flex'>
           <Sidemenu />
           <Sidebar className='flex-1' />
         </Panel>
