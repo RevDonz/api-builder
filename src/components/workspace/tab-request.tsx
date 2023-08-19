@@ -1,7 +1,6 @@
 'use-client';
 import { cn } from '@/lib/utils';
-import { responseAtom } from '@/store/response';
-import { TabsMenu, tabsAtom } from '@/store/tabs';
+import { TabsMenu, responseAtom, tabsAtom } from '@/store/store';
 import {
   Cross2Icon,
   DotsHorizontalIcon,

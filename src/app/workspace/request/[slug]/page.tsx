@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/workspace/ui/select';
-import { responseAtom } from '@/store/response';
+import { responseAtom } from '@/store/store';
 import { DataDummy, ItemProps } from '@/types/collection';
 import { Editor } from '@monaco-editor/react';
 import axios from 'axios';

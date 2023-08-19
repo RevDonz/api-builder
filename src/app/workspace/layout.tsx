@@ -3,7 +3,7 @@
 import Sidebar from '@/components/sidebar';
 import Sidemenu from '@/components/sidemenu';
 import TabRequest from '@/components/workspace/tab-request';
-import { responseAtom } from '@/store/response';
+import { responseAtom } from '@/store/store';
 import { Editor, useMonaco } from '@monaco-editor/react';
 import { useAtom } from 'jotai';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
@@ -39,7 +39,7 @@ export default function WorkspaceLayout({
     <div className='bg-gray-900 text-gray-200 dark'>
       {/* <div className='flex flex-row min-h-screen w-screen'> */}
       <PanelGroup direction='horizontal'>
-        <Panel defaultSize={21} className='flex'>
+        <Panel defaultSize={24} minSize={15} className='flex' id={'sidebar'}>
           <Sidemenu />
           <Sidebar className='flex-1' />
         </Panel>
@@ -61,6 +61,7 @@ export default function WorkspaceLayout({
                 collapsedSize={32}
                 collapsible
                 minSize={64}
+                defaultSize={360}
                 maxSize={360}
                 className='px-3'
               >
