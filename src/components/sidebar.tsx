@@ -22,11 +22,6 @@ import {
   DropdownMenuTrigger,
 } from './workspace/ui/dropdown-menu';
 
-interface DataDisplayProps {
-  data: ItemProps[];
-  className?: string;
-}
-
 interface ISidebar {
   className: string;
 }

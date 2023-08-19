@@ -1,4 +1,5 @@
 'use client';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/workspace/ui/button';
 import { Input } from '@/components/workspace/ui/input';
 import {
@@ -8,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/workspace/ui/select';
-import Editor from '@monaco-editor/react';
+import Editor, { useMonaco } from '@monaco-editor/react';
 import axios from 'axios';
 import { useState } from 'react';
 
@@ -20,35 +21,51 @@ const RequestGet = () => {
   const sendRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setResponse('');
-    await axios({
-      method: method,
-      url: url,
-    })
-      .then((res) => {
-        console.log(res);
-        setResponse(JSON.stringify(res, null, '\t'));
-      })
-      .catch((err) => {
-        console.log(err);
+    try {
+      const res = await axios({
+        method: method,
+        url: url,
       });
+      setResponse(JSON.stringify(res, null, '\t'));
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
   };
+
+  const mon = useMonaco();
 
   const options = {
     minimap: { enabled: false },
     formatOnPaste: true,
-    readOnly: true,
+    // readOnly: true,
     domReadOnly: true,
+  };
+
+  const handleMount = () => {
+    mon?.editor.defineTheme('my-theme', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#111111',
+      },
+    });
+    mon?.editor.setTheme('my-theme');
   };
 
   return (
     <div className='flex flex-col'>
       <form onSubmit={sendRequest} className='flex items-center justify-center'>
         <Select onValueChange={(value) => setMethod(value)}>
-          <SelectTrigger className='rounded-l-md w-32'>
-            <SelectValue placeholder='Theme' />
+          <SelectTrigger className='rounded-l-md w-32 mr-[1px]'>
+            <SelectValue placeholder='Method' />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value='get' className='text-green-500'>
+            <SelectItem
+              value='get'
+              className='text-green-500 hover:text-red-500'
+            >
               GET
             </SelectItem>
             <SelectItem value='post' className='text-yellow-500'>
@@ -59,6 +76,7 @@ const RequestGet = () => {
             </SelectItem>
           </SelectContent>
         </Select>
+
         <Input
           type='text'
           placeholder='Enter URL'
@@ -66,20 +84,32 @@ const RequestGet = () => {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
         />
-        <Button className='uppercase ml-3' type='submit'>
+        <Button className='uppercase ml-3' variant={'secondary'} type='submit'>
           send
         </Button>
       </form>
-      <div className='w-full h-96 flex flex-col gap-5 mt-5'>
-        <p>Response</p>
-        <Editor
-          defaultLanguage='json'
-          theme='vs-dark'
-          defaultValue='// some comment'
-          value={response}
-          options={options}
-        />
-      </div>
+      <Tabs defaultValue='params' className='w-full mt-5'>
+        <TabsList>
+          <TabsTrigger value='params'>Params</TabsTrigger>
+          <TabsTrigger value='authorization'>Authorization</TabsTrigger>
+          <TabsTrigger value='headers'>Headers</TabsTrigger>
+          <TabsTrigger value='body'>Body</TabsTrigger>
+        </TabsList>
+        <TabsContent value='params'>Parameter</TabsContent>
+        <TabsContent value='authorization'>Auth</TabsContent>
+        <TabsContent value='headers'>Headers</TabsContent>
+        <TabsContent value='body'>
+          <div className='h-96 w-full flex flex-col gap-5 mt-5 border-2 border-gray-800 rounded'>
+            <Editor
+              defaultLanguage='json'
+              theme='vs-dark'
+              value={response}
+              options={options}
+              onMount={handleMount}
+            />
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
