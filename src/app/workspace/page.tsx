@@ -1,9 +1,10 @@
 'use client';
 
 const Workspace = () => {
-  
   return (
-    <p>asd</p>
+    <div className='h-full w-full flex items-center justify-center'>
+      Selamat Datang Di Api-Builder
+    </div>
   );
 };
 

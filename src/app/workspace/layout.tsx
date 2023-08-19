@@ -3,68 +3,85 @@
 import Sidebar from '@/components/sidebar';
 import Sidemenu from '@/components/sidemenu';
 import TabRequest from '@/components/workspace/tab-request';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { responseAtom } from '@/store/response';
+import { Editor, useMonaco } from '@monaco-editor/react';
+import { useAtom } from 'jotai';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 
 export default function WorkspaceLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const sidebarRef = useRef<HTMLDivElement>(null);
-  const [isResizing, setIsResizing] = useState(false);
-  const [sidebarWidth, setSidebarWidth] = useState(256);
+  const [response] = useAtom(responseAtom);
 
-  const startResizing = useCallback((mouseDownEvent: React.MouseEvent) => {
-    setIsResizing(true);
-  }, []);
+  const options = {
+    minimap: { enabled: false },
+    formatOnPaste: true,
+    readOnly: true,
+    domReadOnly: true,
+  };
+  const mon = useMonaco();
 
-  const stopResizing = useCallback(() => {
-    setIsResizing(false);
-  }, []);
+  const handleMount = () => {
+    mon?.editor.defineTheme('my-theme', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#111111',
+      },
+    });
+    mon?.editor.setTheme('my-theme');
+  };
 
-  const resize = useCallback(
-    (mouseMoveEvent: MouseEvent) => {
-      if (isResizing && sidebarRef.current) {
-        setSidebarWidth(
-          mouseMoveEvent.clientX -
-            sidebarRef.current.getBoundingClientRect().left
-        );
-      }
-    },
-    [isResizing]
-  );
-
-  useEffect(() => {
-    window.addEventListener('mousemove', resize);
-    window.addEventListener('mouseup', stopResizing);
-    return () => {
-      window.removeEventListener('mousemove', resize);
-      window.removeEventListener('mouseup', stopResizing);
-    };
-  }, [resize, stopResizing]);
   return (
     <div className='bg-gray-900 text-gray-200 dark'>
-      <div className='flex flex-row min-h-screen w-screen'>
-        <Sidemenu />
-        <div
-          className={`relative flex flex-grow-0 flex-shrink-0`}
-          ref={sidebarRef}
-          onMouseDown={(e) => e.preventDefault()}
-          style={{ width: sidebarWidth, minWidth: '256px', maxWidth: '40vw' }}
-        >
+      {/* <div className='flex flex-row min-h-screen w-screen'> */}
+      <PanelGroup direction='horizontal'>
+        <Panel defaultSize={10} minSize={20} className='flex'>
+          <Sidemenu />
           <Sidebar className='flex-1' />
-          <div
-            className='cursor-col-resize bg-gray-700/50 hover:bg-indigo-500 h-full w-[3px] flex-grow-0 flex-shrink-0 resize-x'
-            onMouseDown={startResizing}
-          ></div>
-        </div>
-        <div className='flex flex-col w-full'>
-          <div className='h-16 bg-gray-700 flex items-center'></div>
-
-          <TabRequest />
-          <div className='p-3'>{children}</div>
-        </div>
-      </div>
+        </Panel>
+        <PanelResizeHandle>
+          <div className='cursor-col-resize bg-gray-700/50 hover:bg-indigo-500 h-full w-[3px] flex-grow-0 flex-shrink-0 resize-x'></div>
+        </PanelResizeHandle>
+        <Panel>
+          <div className='flex flex-col w-full h-full'>
+            <div className='h-16 bg-gray-700 flex items-center'></div>
+            <TabRequest />
+            <PanelGroup direction='vertical' units='pixels'>
+              <Panel>
+                <div className='p-3'>{children}</div>
+              </Panel>
+              <PanelResizeHandle>
+                <div className='cursor-row-resize bg-gray-700/50 hover:bg-indigo-500 w-full h-[2px] flex-grow-0 flex-shrink-0 resize-x'></div>
+              </PanelResizeHandle>
+              <Panel
+                collapsedSize={32}
+                collapsible
+                minSize={64}
+                maxSize={360}
+                className='px-3'
+              >
+                <div className='h-8 w-full border-t mt-auto flex items-center'>
+                  <p>Response</p>
+                </div>
+                <div className='h-96 w-full flex flex-col gap-5 mt-3 border-2 border-gray-800 rounded'>
+                  <Editor
+                    defaultLanguage='json'
+                    theme='vs-dark'
+                    value={response}
+                    options={options}
+                    onMount={handleMount}
+                  />
+                </div>
+              </Panel>
+            </PanelGroup>
+          </div>
+        </Panel>
+      </PanelGroup>
     </div>
+    // </div>
   );
 }
