@@ -95,6 +95,7 @@ export default function Sidebar({ className }: ISidebar) {
           <Link
             href={`/workspace/request/${item.name}`}
             onClick={() => handleTabs(item)}
+            key={index}
           >
             <button
               className={`flex pl-${
