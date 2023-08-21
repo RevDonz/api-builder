@@ -116,7 +116,12 @@ const TabRequest = () => {
               onClick={() => {
                 setTes([]);
                 router.push('/workspace');
-                setResponse('');
+                setResponse({
+                  response: '',
+                  responseTime: 0,
+                  status: 0,
+                  isSend: false,
+                });
               }}
               disabled={tes.length === 0}
             >
