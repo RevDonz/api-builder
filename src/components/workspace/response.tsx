@@ -17,27 +17,29 @@ const ResponseSection = () => {
     readOnly: true,
     domReadOnly: true,
   };
-  return (
-    <Panel
-      collapsedSize={32}
-      collapsible
-      minSize={64}
-      defaultSize={360}
-      maxSize={720}
-      className='px-3'
-    >
-      <div className='h-8 w-full border-t mt-auto flex items-center justify-between'>
-        <div className=''>
-          <p>Response</p>
-        </div>
-        {response.isSend && (
-          <div className='flex gap-5'>
-            <p>Status : {response.status}</p>
-            <p>Time: {response.responseTime} ms</p>
+
+  if (pathname !== '/workspace')
+    return (
+      <Panel
+        collapsedSize={32}
+        collapsible
+        minSize={64}
+        defaultSize={360}
+        maxSize={720}
+        className='px-3'
+      >
+        <div className='h-8 w-full border-t mt-auto flex items-center justify-between'>
+          <div className=''>
+            <p>Response</p>
           </div>
-        )}
-      </div>
-      {pathname !== '/workspace' && (
+          {response.isSend && (
+            <div className='flex gap-5'>
+              <p>Status : {response.status}</p>
+              <p>Time: {response.responseTime} ms</p>
+            </div>
+          )}
+        </div>
+
         <div className=' w-full flex flex-col items-center justify-center gap-5 mt-3 rounded'>
           {response.response !== '' ? (
             <Editor
@@ -51,13 +53,12 @@ const ResponseSection = () => {
           ) : (
             <div className='h-[640px] flex flex-col items-center mt-10'>
               <Image src={OuterSpace} alt='Send Request' height={100} />
-              <p className='mt-5'>Click Send to send request</p>
+              <p className='mt-5'>Click Send to get a response</p>
             </div>
           )}
         </div>
-      )}
-    </Panel>
-  );
+      </Panel>
+    );
 };
 
 export default ResponseSection;
