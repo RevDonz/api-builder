@@ -13,7 +13,7 @@ import { responseAtom } from '@/store/store';
 import { DataDummy, ItemProps } from '@/types/collection';
 import { Editor } from '@monaco-editor/react';
 import axios from 'axios';
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 
 const PageRequest = ({ params }: { params: { slug: string } }) => {
@@ -21,7 +21,7 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
   const [method, setMethod] = useState('GET');
   const [url, setUrl] = useState('');
 
-  const [response, setResponse] = useAtom(responseAtom);
+  const setResponse = useSetAtom(responseAtom);
 
   const GetData = () => {
     GetDataRecursive(DataDummy.items);
@@ -44,7 +44,12 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
 
   const sendRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setResponse('');
+    setResponse({
+      response: '',
+      responseTime: 0,
+      status: 0,
+      isSend: false,
+    });
 
     try {
       const startTime = new Date();
@@ -54,12 +59,15 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
       });
       const endTime = new Date(); // Waktu setelah respons diterima
       const elapsed = endTime.getTime() - startTime.getTime();
-      console.log(elapsed);
-      
-      setResponse(JSON.stringify(res, null, '\t'));
-      console.log(res);
-    } catch (err) {
-      console.log(err);
+
+      setResponse({
+        response: JSON.stringify(res, null, '\t'),
+        responseTime: elapsed,
+        status: res.status,
+        isSend: true,
+      });
+    } catch (error: any) {
+      setResponse(error.response.data);
     }
   };
 
