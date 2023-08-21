@@ -15,7 +15,7 @@ import {
 } from '@radix-ui/react-icons';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
-import { Button } from './workspace/ui/button';
+import { Button } from './ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +23,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './workspace/ui/dropdown-menu';
+} from './ui/dropdown-menu';
 
 interface ISidebar {
   className: string;
@@ -85,6 +85,7 @@ export default function Sidebar({ className }: ISidebar) {
               </svg>
               {item.name}
             </AccordionTrigger>
+
             <AccordionContent>
               <DataRecursive data={item.item} depth={depth + 1} />
             </AccordionContent>

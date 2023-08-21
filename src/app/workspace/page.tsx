@@ -1,8 +1,11 @@
-'use client';
+import type { Metadata } from 'next';
 
+export const metadata: Metadata = {
+  title: 'Workspace',
+};
 const Workspace = () => {
   return (
-    <div className='h-full w-full flex items-center justify-center'>
+    <div className='h-[85vh] w-full flex items-center justify-center'>
       Selamat Datang Di Api-Builder
     </div>
   );

@@ -6,6 +6,18 @@ export type TabsMenu = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
 };
 
-export const responseAtom = atom<string>('');
+export type TResponseAPI = {
+  response: string;
+  status: number;
+  responseTime: number;
+  isSend: boolean;
+};
+
+export const responseAtom = atom<TResponseAPI>({
+  response: '',
+  status: 0,
+  responseTime: 0,
+  isSend: false,
+});
 
 export const tabsAtom = atom<TabsMenu[]>([]);
