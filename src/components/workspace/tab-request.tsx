@@ -42,6 +42,7 @@ const TabRequest = () => {
     } else {
       router.push(`/workspace`);
     }
+    setResponse('');
   };
 
   return (

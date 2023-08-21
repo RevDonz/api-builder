@@ -45,11 +45,17 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
   const sendRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setResponse('');
+
     try {
+      const startTime = new Date();
       const res = await axios({
         method: method,
         url: url,
       });
+      const endTime = new Date(); // Waktu setelah respons diterima
+      const elapsed = endTime.getTime() - startTime.getTime();
+      console.log(elapsed);
+      
       setResponse(JSON.stringify(res, null, '\t'));
       console.log(res);
     } catch (err) {

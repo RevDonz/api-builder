@@ -85,6 +85,7 @@ export default function Sidebar({ className }: ISidebar) {
               </svg>
               {item.name}
             </AccordionTrigger>
+
             <AccordionContent>
               <DataRecursive data={item.item} depth={depth + 1} />
             </AccordionContent>
