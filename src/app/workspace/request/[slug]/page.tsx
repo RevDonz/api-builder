@@ -1,5 +1,14 @@
 'use client';
+
 import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/workspace/ui/input';
 import {
@@ -130,7 +139,33 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
           <TabsTrigger value='headers'>Headers</TabsTrigger>
           <TabsTrigger value='body'>Body</TabsTrigger>
         </TabsList>
-        <TabsContent value='params'>Parameter</TabsContent>
+        <TabsContent value='params'>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead></TableHead>
+                <TableHead>Key</TableHead>
+                <TableHead>Value</TableHead>
+                <TableHead>Description</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell className='font-medium'>INV001</TableCell>
+                <TableCell>
+                  <input
+                    type='text'
+                    className='bg-transparent outline-none border border-transparent focus:border-gray-7 00 p-1 w-full'
+                    placeholder='key'
+                  />
+                </TableCell>
+                <TableCell>Credit Card</TableCell>
+              </TableRow>
+              
+            </TableBody>
+          </Table>
+        </TabsContent>
         <TabsContent value='authorization'>Auth</TabsContent>
         <TabsContent value='headers'>Headers</TabsContent>
         <TabsContent value='body'>
