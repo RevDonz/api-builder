@@ -13,8 +13,10 @@ import {
   PlusIcon,
   TriangleDownIcon,
 } from '@radix-ui/react-icons';
+import axios from 'axios';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -128,6 +130,88 @@ export default function Sidebar({ className }: ISidebar) {
         );
     });
   };
+
+  type DataCollection = {
+    id: string;
+    name: string;
+    user_id: string;
+  };
+
+  type DataRequest = {
+    id: string;
+    collection_id: string;
+    name: string;
+    url: string;
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    bearer_token: string;
+    payload: string;
+  };
+
+  type AllData = DataCollection & {
+    items: DataRequest[];
+  };
+
+  const [dataCollections, setCollections] = useState<DataCollection[]>([]);
+  const [allData, setAllData] = useState<AllData[]>([]);
+
+  const getDataCollections = async () => {
+    const res = await axios(
+      `${process.env.NEXT_PUBLIC_API_URL}/collection/v1/5a4f2e4f-4692-4fc9-8767-8d08f6e72d17`,
+      {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMwMzM1NTIsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.Xb_bRGoxXNZcVzUELL-d4EJFRttIaVk4MS_ZW1Xd5Ag',
+        },
+      }
+    );
+    setCollections(res.data.data);
+    return res.data.data;
+  };
+
+  const getAllData = async (data: DataCollection[]) => {
+    data.map((col) => {
+      getDataRequest(col.id).then((data) => {
+        const tes: AllData = {
+          id: col.id,
+          user_id: col.user_id,
+          name: col.name,
+          items: data.data.data,
+        };
+        setAllData((prev) => [...prev, tes]);
+      });
+    });
+  };
+
+  const getDataRequest = async (collectionID: string) => {
+    const res = await axios(
+      `${process.env.NEXT_PUBLIC_API_URL}/request/collection/v1/${collectionID}`,
+      {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMwMzM1NTIsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.Xb_bRGoxXNZcVzUELL-d4EJFRttIaVk4MS_ZW1Xd5Ag',
+        },
+      }
+    );
+
+    return res;
+  };
+
+   const [tes, setTes] = useAtom(tabsAtom);
+
+    const handleTabs = (item: DataRequest) => {
+      const newAtom: TabsMenu = {
+        id: item.id,
+        name: item.name,
+        method: item.method,
+      };
+
+      if (!tes.some((data) => data.id === item.id))
+        setTes((prevState) => [...prevState, newAtom]);
+    }
+
+  useEffect(() => {
+    getDataCollections().then((data) => getAllData(data));
+  }, []);
 
   return (
     <div className={cn('bg-gray-800 h-screen', className)}>
@@ -371,6 +455,49 @@ export default function Sidebar({ className }: ISidebar) {
             </button>
           </AccordionContent>
         </AccordionItem>
+      </Accordion>
+      <Accordion type='multiple'>
+        {allData.map((data) => {
+          return (
+            <AccordionItem value={`item-${data.id}`} key={data.id}>
+              <AccordionTrigger className=''>{data.name}</AccordionTrigger>
+              <AccordionContent>
+                {data.items.map((tes, index) => {
+                  return (
+                    <Link
+                      href={`/workspace/request/${tes.id}`}
+                      onClick={() => handleTabs(tes)}
+                      key={index}
+                    >
+                      <button
+                        className={cn(
+                          'flex hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500',
+                          `pl-12`
+                        )}
+                      >
+                        <p
+                          className={cn(
+                            'py-1 mr-5 w-7',
+                            tes.method === 'GET'
+                              ? 'text-green-500'
+                              : tes.method === 'POST'
+                              ? 'text-yellow-500'
+                              : tes.method === 'PUT'
+                              ? 'text-blue-500'
+                              : 'text-red-500'
+                          )}
+                        >
+                          {tes.method === 'DELETE' ? 'DEL' : tes.method}
+                        </p>
+                        <p className='py-1 text-left'>{tes.name}</p>
+                      </button>
+                    </Link>
+                  );
+                })}
+              </AccordionContent>
+            </AccordionItem>
+          );
+        })}
       </Accordion>
     </div>
   );
