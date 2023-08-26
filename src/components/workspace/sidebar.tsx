@@ -31,6 +31,26 @@ interface ISidebar {
   className: string;
 }
 
+export type DataCollection = {
+  id: string;
+  name: string;
+  user_id: string;
+};
+
+export type DataRequest = {
+  id: string;
+  collection_id: string;
+  name: string;
+  url: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  bearer_token: string;
+  payload: string;
+};
+
+export type AllData = DataCollection & {
+  items: DataRequest[];
+};
+
 export default function Sidebar({ className }: ISidebar) {
   const DataItem = ({ data }: { data: CollectionProps }) => {
     return (
@@ -131,26 +151,6 @@ export default function Sidebar({ className }: ISidebar) {
     });
   };
 
-  type DataCollection = {
-    id: string;
-    name: string;
-    user_id: string;
-  };
-
-  type DataRequest = {
-    id: string;
-    collection_id: string;
-    name: string;
-    url: string;
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-    bearer_token: string;
-    payload: string;
-  };
-
-  type AllData = DataCollection & {
-    items: DataRequest[];
-  };
-
   const [dataCollections, setCollections] = useState<DataCollection[]>([]);
   const [allData, setAllData] = useState<AllData[]>([]);
 
@@ -196,18 +196,19 @@ export default function Sidebar({ className }: ISidebar) {
     return res;
   };
 
-   const [tes, setTes] = useAtom(tabsAtom);
+  const [tes, setTes] = useAtom(tabsAtom);
 
-    const handleTabs = (item: DataRequest) => {
-      const newAtom: TabsMenu = {
-        id: item.id,
-        name: item.name,
-        method: item.method,
-      };
+  const handleTabs = (item: DataRequest) => {
+    const newAtom: TabsMenu = {
+      id: item.id,
+      name: item.name,
+      method: item.method,
+      url: item.url,
+    };
 
-      if (!tes.some((data) => data.id === item.id))
-        setTes((prevState) => [...prevState, newAtom]);
-    }
+    if (!tes.some((data) => data.id === item.id))
+      setTes((prevState) => [...prevState, newAtom]);
+  };
 
   useEffect(() => {
     getDataCollections().then((data) => getAllData(data));

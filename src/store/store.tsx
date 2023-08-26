@@ -4,6 +4,7 @@ export type TabsMenu = {
   id?: string;
   name?: string;
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  url?: string;
 };
 
 export type TResponseAPI = {
