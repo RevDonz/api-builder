@@ -1,6 +1,16 @@
 'use client';
+
 import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { Input } from '@/components/workspace/ui/input';
 import {
   Select,
@@ -9,38 +19,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/workspace/ui/select';
-import { responseAtom } from '@/store/store';
-import { DataDummy, ItemProps } from '@/types/collection';
+import { collectionsAtom, responseAtom } from '@/store/store';
+import { MethodType } from '@/types/collection';
 import { Editor } from '@monaco-editor/react';
 import axios from 'axios';
-import { useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
+
 import { useEffect, useState } from 'react';
 
-const PageRequest = ({ params }: { params: { slug: string } }) => {
-  // const [request, setRequest] = useState<ItemProps>();
-  const [method, setMethod] = useState('GET');
+const FormRequest = ({ params }: { params: { slug: string } }) => {
+  const [method, setMethod] = useState<MethodType>('GET');
   const [url, setUrl] = useState('');
 
   const setResponse = useSetAtom(responseAtom);
-
-  const GetData = () => {
-    GetDataRecursive(DataDummy.items);
-  };
-
-  const GetDataRecursive = (items: ItemProps[]) => {
-    items.map((item) => {
-      if (item.item) {
-        GetDataRecursive(item.item);
-      }
-
-      if (item.request) {
-        if (item.id === params.slug) {
-          setUrl(item.request.url?.raw as string);
-          setMethod(item.request.method as string);
-        }
-      }
-    });
-  };
+  const collections = useAtomValue(collectionsAtom);
 
   const sendRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,19 +66,30 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
   const options = {
     minimap: { enabled: false },
     formatOnPaste: true,
-
     domReadOnly: true,
   };
 
   useEffect(() => {
-    GetData();
-  }, []);
+    let found = false;
+
+    collections &&
+      collections.forEach((collection) => {
+        collection.items &&
+          collection.items.forEach((request) => {
+            if (!found && params.slug === request.id) {
+              setMethod(request.method);
+              setUrl(request.url);
+              found = true;
+            }
+          });
+      });
+  }, [collections, params.slug]);
 
   return (
     <div className='flex flex-col'>
       <form onSubmit={sendRequest} className='flex items-center justify-center'>
         <Select
-          onValueChange={(value) => setMethod(value)}
+          onValueChange={(value) => setMethod(value as MethodType)}
           value={method}
           defaultValue='GET'
         >
@@ -130,7 +133,32 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
           <TabsTrigger value='headers'>Headers</TabsTrigger>
           <TabsTrigger value='body'>Body</TabsTrigger>
         </TabsList>
-        <TabsContent value='params'>Parameter</TabsContent>
+        <TabsContent value='params'>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead></TableHead>
+                <TableHead>Key</TableHead>
+                <TableHead>Value</TableHead>
+                <TableHead>Description</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell className='font-medium'>INV001</TableCell>
+                <TableCell>
+                  <input
+                    type='text'
+                    className='bg-transparent outline-none border border-transparent focus:border-gray-7 00 p-1 w-full'
+                    placeholder='key'
+                  />
+                </TableCell>
+                <TableCell>Credit Card</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TabsContent>
         <TabsContent value='authorization'>Auth</TabsContent>
         <TabsContent value='headers'>Headers</TabsContent>
         <TabsContent value='body'>
@@ -143,4 +171,4 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
   );
 };
 
-export default PageRequest;
+export default FormRequest;

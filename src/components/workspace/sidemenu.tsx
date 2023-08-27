@@ -39,9 +39,7 @@ const Sidemenu = () => {
           <p className='text-[10px]'>Environtment</p>
         </div>
       </div>
-      <div className=''>
-        <p>asd</p>
-      </div>
+      
     </div>
   );
 };

@@ -1,20 +1,33 @@
 'use client';
+
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/workspace/ui/accordion';
+import { getAllCollectionsData } from '@/lib/fetch';
 import { cn } from '@/lib/utils';
-import { TabsMenu, tabsAtom } from '@/store/store';
-import { CollectionProps, DataDummy, ItemProps } from '@/types/collection';
+import { TabsMenu, collectionsAtom, tabsAtom } from '@/store/store';
+import { DataCollection, DataRequest } from '@/types/collection';
+import { DialogClose } from '@radix-ui/react-dialog';
 import {
   MagnifyingGlassIcon,
   PlusIcon,
   TriangleDownIcon,
 } from '@radix-ui/react-icons';
+import axios from 'axios';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
+import { useState } from 'react';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -24,113 +37,60 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { Input } from './ui/input';
 
-interface ISidebar {
-  className: string;
-}
+export type AllData = DataCollection & {
+  items: DataRequest[];
+};
 
-export default function Sidebar({ className }: ISidebar) {
-  const DataItem = ({ data }: { data: CollectionProps }) => {
-    return (
-      <Accordion type='multiple'>
-        <AccordionItem value={`collection-${data.name}`}>
-          <AccordionTrigger className=''>{data.name}</AccordionTrigger>
-          <AccordionContent>
-            <DataRecursive data={data.items} depth={0} />
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-    );
-  };
+export default function Sidebar() {
+  const [tes, setTes] = useAtom(tabsAtom);
+  const [DataCollections, setDataCollections] = useAtom(collectionsAtom);
 
-  const DataRecursive = ({
-    data,
-    depth,
-  }: {
-    data: ItemProps[];
-    depth: number;
-  }) => {
-    const [tes, setTes] = useAtom(tabsAtom);
+  const [nameCollection, setNameCollection] = useState('');
 
-    const handleTabs = (item: ItemProps) => {
-      const newAtom: TabsMenu = {
-        id: item.id,
-        name: item.name,
-        method: item.request?.method,
-      };
-
-      if (!tes.some((data) => data.id === item.id))
-        setTes((prevState) => [...prevState, newAtom]);
+  const handleTabs = (item: DataRequest) => {
+    const newAtom: TabsMenu = {
+      id: item.id,
+      name: item.name,
+      method: item.method,
+      url: item.url,
     };
 
-    return data.map((item: ItemProps, index) => {
-      if (item.item)
-        return (
-          <AccordionItem value={`items-${item.name}-${index}`} key={index}>
-            <AccordionTrigger className={`pl-[${20 + 16 * depth}px]`}>
-              <svg
-                fill='none'
-                stroke='currentColor'
-                strokeWidth={1.5}
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'
-                aria-hidden='true'
-                className='h-4 w-4 mr-3'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z'
-                />
-              </svg>
-              {item.name}
-            </AccordionTrigger>
+    if (!tes.some((data) => data.id === item.id))
+      setTes((prevState) => [...prevState, newAtom]);
+  };
 
-            <AccordionContent>
-              <DataRecursive data={item.item} depth={depth + 1} />
-            </AccordionContent>
-          </AccordionItem>
+  const submitHandle = async () => {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/collection/v1`,
+        {
+          userID: '5a4f2e4f-4692-4fc9-8767-8d08f6e72d17',
+          name: nameCollection,
+        },
+        {
+          headers: {
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMyMzQ4NDEsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.RkwOc1DiUlNJsaPhTZFFPJD3EdQ5cj_ZQKnlz5IZMfc',
+          },
+        }
+      );
+
+      if (res.status === 201) {
+        const res = await getAllCollectionsData(
+          '5a4f2e4f-4692-4fc9-8767-8d08f6e72d17'
         );
 
-      if (item.request)
-        return (
-          <Link
-            href={`/workspace/request/${item.id}`}
-            onClick={() => handleTabs(item)}
-            key={index}
-          >
-            <button
-              className={cn(
-                'flex hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500',
-                `pl-${4 * (3 + depth)}`
-              )}
-              key={index}
-            >
-              <p
-                className={cn(
-                  'py-1 mr-5 w-7',
-                  item.request?.method === 'GET'
-                    ? 'text-green-500'
-                    : item.request?.method === 'POST'
-                    ? 'text-yellow-500'
-                    : item.request?.method === 'PUT'
-                    ? 'text-blue-500'
-                    : 'text-red-500'
-                )}
-              >
-                {item.request?.method === 'DELETE'
-                  ? 'DEL'
-                  : item.request?.method}
-              </p>
-              <p className='py-1 text-left'>{item.name}</p>
-            </button>
-          </Link>
-        );
-    });
+        setDataCollections(res);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
-    <div className={cn('bg-gray-800 h-screen', className)}>
+    <div className={cn('bg-gray-800 h-screen flex-1')}>
       <div className='h-16 border-b border-gray-700/50 flex items-center'>
         <DropdownMenu>
           <DropdownMenuTrigger asChild className='mx-3'>
@@ -157,13 +117,46 @@ export default function Sidebar({ className }: ISidebar) {
           />
         </div>
 
-        <button className='p-2 rounded bg-gray-700 hover:bg-gray-600'>
-          <PlusIcon className='h-4 w-4' />
-        </button>
+        <Dialog>
+          <form>
+            <DialogTrigger asChild>
+              <button className='p-2 rounded bg-gray-700 hover:bg-gray-600'>
+                <PlusIcon className='h-4 w-4' />
+              </button>
+            </DialogTrigger>
+            <DialogContent className='sm:max-w-[425px]'>
+              <DialogHeader>
+                <DialogTitle>Add Collection</DialogTitle>
+              </DialogHeader>
+              <div className='grid gap-4 py-4'>
+                <div className='grid grid-cols-4 items-center gap-4'>
+                  <label
+                    htmlFor='nameCollection'
+                    className='text-right text-sm'
+                  >
+                    Name
+                  </label>
+                  <Input
+                    id='nameCollection'
+                    value={nameCollection}
+                    className='col-span-3 rounded-md'
+                    onChange={(e) => setNameCollection(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type='submit' onClick={() => submitHandle()}>
+                    Add
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </form>
+        </Dialog>
       </div>
 
-      <DataItem data={DataDummy} />
-      <Accordion type='multiple'>
+      {/* <Accordion type='multiple'>
         <AccordionItem value='item-1'>
           <AccordionTrigger className=''>Toko Laku</AccordionTrigger>
           <AccordionContent>
@@ -371,6 +364,56 @@ export default function Sidebar({ className }: ISidebar) {
             </button>
           </AccordionContent>
         </AccordionItem>
+      </Accordion>  */}
+      <Accordion type='multiple'>
+        {DataCollections && DataCollections.length > 0 ? (
+          DataCollections.map((data: AllData) => {
+            if (data != null) {
+              return (
+                <AccordionItem value={`item-${data.id}`} key={data.id}>
+                  <AccordionTrigger className=''>{data.name}</AccordionTrigger>
+                  <AccordionContent>
+                    {data.items &&
+                      data.items.map((tes, index) => {
+                        return (
+                          <Link
+                            href={`/workspace/request/${tes.id}`}
+                            onClick={() => handleTabs(tes)}
+                            key={index}
+                          >
+                            <button
+                              className={cn(
+                                'flex hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500',
+                                `pl-12`
+                              )}
+                            >
+                              <p
+                                className={cn(
+                                  'py-1 mr-5 w-7',
+                                  tes.method === 'GET'
+                                    ? 'text-green-500'
+                                    : tes.method === 'POST'
+                                    ? 'text-yellow-500'
+                                    : tes.method === 'PUT'
+                                    ? 'text-blue-500'
+                                    : 'text-red-500'
+                                )}
+                              >
+                                {tes.method === 'DELETE' ? 'DEL' : tes.method}
+                              </p>
+                              <p className='py-1 text-left'>{tes.name}</p>
+                            </button>
+                          </Link>
+                        );
+                      })}
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            }
+          })
+        ) : (
+          <></>
+        )}
       </Accordion>
     </div>
   );

@@ -1,9 +1,11 @@
-import { atom } from 'jotai';
+import { AllData } from '@/components/workspace/sidebar';
+import { atomWithStorage } from 'jotai/utils';
 
 export type TabsMenu = {
   id?: string;
   name?: string;
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  url?: string;
 };
 
 export type TResponseAPI = {
@@ -13,11 +15,19 @@ export type TResponseAPI = {
   isSend: boolean;
 };
 
-export const responseAtom = atom<TResponseAPI>({
+// atoms
+
+export const responseAtom = atomWithStorage<TResponseAPI>('response', {
   response: '',
   status: 0,
   responseTime: 0,
   isSend: false,
 });
 
-export const tabsAtom = atom<TabsMenu[]>([]);
+if (typeof window !== 'undefined') {
+  var localStorageData = localStorage.getItem('tabs');
+  var initialData = localStorageData ? JSON.parse(localStorageData) : [];
+}
+export const tabsAtom = atomWithStorage<TabsMenu[]>('tabs', initialData);
+
+export const collectionsAtom = atomWithStorage<AllData[]>('collections', []);
