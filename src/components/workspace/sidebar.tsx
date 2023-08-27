@@ -1,4 +1,5 @@
 'use client';
+
 import {
   Accordion,
   AccordionContent,
@@ -7,7 +8,12 @@ import {
 } from '@/components/workspace/ui/accordion';
 import { cn } from '@/lib/utils';
 import { TabsMenu, tabsAtom } from '@/store/store';
-import { CollectionProps, DataDummy, ItemProps } from '@/types/collection';
+import {
+  CollectionProps,
+  DataCollection,
+  DataRequest,
+  ItemProps,
+} from '@/types/collection';
 import {
   MagnifyingGlassIcon,
   PlusIcon,
@@ -30,22 +36,6 @@ import {
 interface ISidebar {
   className: string;
 }
-
-export type DataCollection = {
-  id: string;
-  name: string;
-  user_id: string;
-};
-
-export type DataRequest = {
-  id: string;
-  collection_id: string;
-  name: string;
-  url: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  bearer_token: string;
-  payload: string;
-};
 
 export type AllData = DataCollection & {
   items: DataRequest[];
@@ -151,7 +141,6 @@ export default function Sidebar({ className }: ISidebar) {
     });
   };
 
-  const [dataCollections, setCollections] = useState<DataCollection[]>([]);
   const [allData, setAllData] = useState<AllData[]>([]);
 
   const getDataCollections = async () => {
@@ -160,11 +149,11 @@ export default function Sidebar({ className }: ISidebar) {
       {
         headers: {
           Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMwMzM1NTIsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.Xb_bRGoxXNZcVzUELL-d4EJFRttIaVk4MS_ZW1Xd5Ag',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMyMjY4MDMsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.6AgZmClT_5OgkqaU0ttYQSMoq_YkCOEgt5pwBAjOxA4',
         },
       }
     );
-    setCollections(res.data.data);
+
     return res.data.data;
   };
 
@@ -188,7 +177,7 @@ export default function Sidebar({ className }: ISidebar) {
       {
         headers: {
           Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMwMzM1NTIsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.Xb_bRGoxXNZcVzUELL-d4EJFRttIaVk4MS_ZW1Xd5Ag',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMyMjY4MDMsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.6AgZmClT_5OgkqaU0ttYQSMoq_YkCOEgt5pwBAjOxA4',
         },
       }
     );
@@ -247,7 +236,7 @@ export default function Sidebar({ className }: ISidebar) {
         </button>
       </div>
 
-      <DataItem data={DataDummy} />
+      {/* <DataItem data={DataDummy} />
       <Accordion type='multiple'>
         <AccordionItem value='item-1'>
           <AccordionTrigger className=''>Toko Laku</AccordionTrigger>
@@ -456,7 +445,7 @@ export default function Sidebar({ className }: ISidebar) {
             </button>
           </AccordionContent>
         </AccordionItem>
-      </Accordion>
+      </Accordion> */}
       <Accordion type='multiple'>
         {allData.map((data) => {
           return (

@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 
 export type TabsMenu = {
   id?: string;
@@ -14,11 +14,17 @@ export type TResponseAPI = {
   isSend: boolean;
 };
 
-export const responseAtom = atom<TResponseAPI>({
+// atoms
+
+export const responseAtom = atomWithStorage<TResponseAPI>('response', {
   response: '',
   status: 0,
   responseTime: 0,
   isSend: false,
 });
 
-export const tabsAtom = atom<TabsMenu[]>([]);
+if (typeof window !== 'undefined') {
+  var localStorageData = localStorage.getItem('tabs');
+  var initialData = localStorageData ? JSON.parse(localStorageData) : [];
+}
+export const tabsAtom = atomWithStorage<TabsMenu[]>('tabs', initialData);

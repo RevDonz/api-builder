@@ -1,4 +1,5 @@
-'use-client';
+'use client';
+
 import { cn } from '@/lib/utils';
 import { TabsMenu, responseAtom, tabsAtom } from '@/store/store';
 import {
@@ -6,7 +7,7 @@ import {
   DotsHorizontalIcon,
   PlusIcon,
 } from '@radix-ui/react-icons';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
@@ -23,7 +24,7 @@ const TabRequest = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [tes, setTes] = useAtom(tabsAtom);
-  const [response, setResponse] = useAtom(responseAtom);
+  const setResponse = useSetAtom(responseAtom);
 
   const removeTabs = async (data: TabsMenu) => {
     const indexToRemove = tes.findIndex((item) => item.id === data.id);
@@ -114,8 +115,8 @@ const TabRequest = () => {
           <DropdownMenuContent align='end'>
             <DropdownMenuItem
               onClick={() => {
-                setTes([]);
                 router.push('/workspace');
+                setTes([]);
                 setResponse({
                   response: '',
                   responseTime: 0,

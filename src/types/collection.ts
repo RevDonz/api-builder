@@ -12,13 +12,31 @@ export type ItemProps = {
 };
 
 export type RequestProps = {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method?: MethodType;
   url?: UrlProps;
 };
 
 export type UrlProps = {
   raw: string;
 };
+
+export type DataCollection = {
+  id: string;
+  name: string;
+  user_id: string;
+};
+
+export type DataRequest = {
+  id: string;
+  collection_id: string;
+  name: string;
+  url: string;
+  method: MethodType;
+  bearer_token: string;
+  payload: string;
+};
+
+export type MethodType = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export const DataDummy: CollectionProps = {
   name: 'TokoSaya',

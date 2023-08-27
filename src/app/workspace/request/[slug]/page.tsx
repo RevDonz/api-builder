@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { DataCollection, DataRequest } from '@/components/workspace/sidebar';
+
 import { Input } from '@/components/workspace/ui/input';
 import {
   Select,
@@ -19,39 +19,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/workspace/ui/select';
-import { responseAtom, tabsAtom } from '@/store/store';
-import { DataDummy, ItemProps } from '@/types/collection';
+import { getAllCollection, getDataRequest } from '@/lib/fetch';
+import { responseAtom } from '@/store/store';
+import { DataCollection, DataRequest, MethodType } from '@/types/collection';
 import { Editor } from '@monaco-editor/react';
 import axios from 'axios';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
+
 import { useEffect, useState } from 'react';
 
-const PageRequest = ({ params }: { params: { slug: string } }) => {
-  // const [request, setRequest] = useState<ItemProps>();
-  const [tes] = useAtomValue(tabsAtom);
-  const [method, setMethod] = useState(tes.method);
-  const [url, setUrl] = useState(tes.url);
+const FormRequest = ({ params }: { params: { slug: string } }) => {
+  const [method, setMethod] = useState<MethodType>('GET');
+  const [url, setUrl] = useState('');
 
   const setResponse = useSetAtom(responseAtom);
-
-  const GetData = () => {
-    GetDataRecursive(DataDummy.items);
-  };
-
-  const GetDataRecursive = (items: ItemProps[]) => {
-    items.map((item) => {
-      if (item.item) {
-        GetDataRecursive(item.item);
-      }
-
-      if (item.request) {
-        if (item.id === params.slug) {
-          setUrl(item.request.url?.raw as string);
-          setMethod(item.request.method);
-        }
-      }
-    });
-  };
 
   const sendRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -85,28 +66,13 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
   const options = {
     minimap: { enabled: false },
     formatOnPaste: true,
-
     domReadOnly: true,
-  };
-
-  const getDataCollections = async () => {
-    const res = await axios(
-      `${process.env.NEXT_PUBLIC_API_URL}/collection/v1/5a4f2e4f-4692-4fc9-8767-8d08f6e72d17`,
-      {
-        headers: {
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMwMzM1NTIsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.Xb_bRGoxXNZcVzUELL-d4EJFRttIaVk4MS_ZW1Xd5Ag',
-        },
-      }
-    );
-
-    return res.data.data;
   };
 
   const getAllData = async (data: DataCollection[]) => {
     data.map((col) => {
       getDataRequest(col.id).then((data) => {
-        data.data.data.map((tes: DataRequest) => {
+        data.data.map((tes: DataRequest) => {
           if (params.slug === tes.id) {
             setMethod(tes.method);
             setUrl(tes.url);
@@ -116,25 +82,11 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
     });
   };
 
-  const getDataRequest = async (collectionID: string) => {
-    const res = await axios(
-      `${process.env.NEXT_PUBLIC_API_URL}/request/collection/v1/${collectionID}`,
-      {
-        headers: {
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMwMzM1NTIsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.Xb_bRGoxXNZcVzUELL-d4EJFRttIaVk4MS_ZW1Xd5Ag',
-        },
-      }
-    );
-
-    return res;
-  };
-
   useEffect(() => {
-    GetData();
-    getDataCollections().then((data) => getAllData(data));
+    // GetData();
+    getAllCollection().then((data) => getAllData(data));
   }, []);
-  type MethodType = 'GET' | 'POST' | 'PUT' | 'DELETE';
+
   return (
     <div className='flex flex-col'>
       <form onSubmit={sendRequest} className='flex items-center justify-center'>
@@ -221,4 +173,4 @@ const PageRequest = ({ params }: { params: { slug: string } }) => {
   );
 };
 
-export default PageRequest;
+export default FormRequest;
