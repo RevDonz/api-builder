@@ -12,11 +12,14 @@ const Workspace = () => {
   const setCollections = useSetAtom(collectionsAtom);
 
   const getAllData = async () => {
-    const res = await getAllCollectionsData(
-      '5a4f2e4f-4692-4fc9-8767-8d08f6e72d17'
-    );
-
-    setCollections(res);
+    try {
+      const res = await getAllCollectionsData(
+        '5a4f2e4f-4692-4fc9-8767-8d08f6e72d17'
+      );
+      setCollections(res);
+    } catch (error) {
+      console.error('Error fetching collections data:', error);
+    }
   };
 
   useEffect(() => {

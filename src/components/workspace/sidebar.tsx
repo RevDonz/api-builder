@@ -76,7 +76,7 @@ export default function Sidebar({ className }: ISidebar) {
         {
           headers: {
             Authorization:
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMxNDgyODcsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.lpR8RsTavHQadXrg8TpK4ub2A137gGLxLpXHWFEziYY',
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMyMzQ4NDEsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.RkwOc1DiUlNJsaPhTZFFPJD3EdQ5cj_ZQKnlz5IZMfc',
           },
         }
       );
@@ -370,49 +370,54 @@ export default function Sidebar({ className }: ISidebar) {
         </AccordionItem>
       </Accordion>  */}
       <Accordion type='multiple'>
-        {DataCollections &&
+        {DataCollections && DataCollections.length > 0 ? (
           DataCollections.map((data: AllData) => {
-            return (
-              <AccordionItem value={`item-${data.id}`} key={data.id}>
-                <AccordionTrigger className=''>{data.name}</AccordionTrigger>
-                <AccordionContent>
-                  {data.items &&
-                    data.items.map((tes, index) => {
-                      return (
-                        <Link
-                          href={`/workspace/request/${tes.id}`}
-                          onClick={() => handleTabs(tes)}
-                          key={index}
-                        >
-                          <button
-                            className={cn(
-                              'flex hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500',
-                              `pl-12`
-                            )}
+            if (data != null) {
+              return (
+                <AccordionItem value={`item-${data.id}`} key={data.id}>
+                  <AccordionTrigger className=''>{data.name}</AccordionTrigger>
+                  <AccordionContent>
+                    {data.items &&
+                      data.items.map((tes, index) => {
+                        return (
+                          <Link
+                            href={`/workspace/request/${tes.id}`}
+                            onClick={() => handleTabs(tes)}
+                            key={index}
                           >
-                            <p
+                            <button
                               className={cn(
-                                'py-1 mr-5 w-7',
-                                tes.method === 'GET'
-                                  ? 'text-green-500'
-                                  : tes.method === 'POST'
-                                  ? 'text-yellow-500'
-                                  : tes.method === 'PUT'
-                                  ? 'text-blue-500'
-                                  : 'text-red-500'
+                                'flex hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500',
+                                `pl-12`
                               )}
                             >
-                              {tes.method === 'DELETE' ? 'DEL' : tes.method}
-                            </p>
-                            <p className='py-1 text-left'>{tes.name}</p>
-                          </button>
-                        </Link>
-                      );
-                    })}
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
+                              <p
+                                className={cn(
+                                  'py-1 mr-5 w-7',
+                                  tes.method === 'GET'
+                                    ? 'text-green-500'
+                                    : tes.method === 'POST'
+                                    ? 'text-yellow-500'
+                                    : tes.method === 'PUT'
+                                    ? 'text-blue-500'
+                                    : 'text-red-500'
+                                )}
+                              >
+                                {tes.method === 'DELETE' ? 'DEL' : tes.method}
+                              </p>
+                              <p className='py-1 text-left'>{tes.name}</p>
+                            </button>
+                          </Link>
+                        );
+                      })}
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            }
+          })
+        ) : (
+          <></>
+        )}
       </Accordion>
     </div>
   );
