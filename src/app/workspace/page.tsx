@@ -2,12 +2,8 @@
 import { getAllCollectionsData } from '@/lib/fetch';
 import { collectionsAtom } from '@/store/store';
 import { useSetAtom } from 'jotai';
-import type { Metadata } from 'next';
 import { useEffect } from 'react';
 
-export const metadata: Metadata = {
-  title: 'Workspace',
-};
 const Workspace = () => {
   const setCollections = useSetAtom(collectionsAtom);
 
