@@ -1,3 +1,4 @@
+import { AllData } from '@/components/workspace/sidebar';
 import { atomWithStorage } from 'jotai/utils';
 
 export type TabsMenu = {
@@ -28,3 +29,5 @@ if (typeof window !== 'undefined') {
   var initialData = localStorageData ? JSON.parse(localStorageData) : [];
 }
 export const tabsAtom = atomWithStorage<TabsMenu[]>('tabs', initialData);
+
+export const collectionsAtom = atomWithStorage<AllData[]>('collections', []);

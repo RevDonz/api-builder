@@ -1,8 +1,9 @@
+import { DataCollection } from '@/types/collection';
 import axios from 'axios';
 
-export const getAllCollection = async () => {
+export const getAllCollection = async (userId: string) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/collection/v1/5a4f2e4f-4692-4fc9-8767-8d08f6e72d17`,
+    `${process.env.NEXT_PUBLIC_API_URL}/collection/v1/${userId}`,
     {
       headers: {
         Authorization:
@@ -32,4 +33,32 @@ export const getDataRequest = async (collectionID: string) => {
   );
 
   return res.data;
+};
+
+export const getAllCollectionsData = async (
+  userId: string = '5a4f2e4f-4692-4fc9-8767-8d08f6e72d17'
+) => {
+  try {
+    const Collections: DataCollection[] = await getAllCollection(userId);
+
+    const getDataPromises = Collections.map(async (collection) => {
+      const data = await getDataRequest(collection.id);
+
+      const transformedData = {
+        id: collection.id,
+        user_id: collection.user_id,
+        name: collection.name,
+        items: data.data,
+      };
+
+      return transformedData;
+    });
+
+    const allData = await Promise.all(getDataPromises);
+
+    return allData;
+  } catch (error) {
+    console.error('Error in getAllCollectionsData:', error);
+    throw error;
+  }
 };

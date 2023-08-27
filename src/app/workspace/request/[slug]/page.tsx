@@ -19,12 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/workspace/ui/select';
-import { getAllCollection, getDataRequest } from '@/lib/fetch';
-import { responseAtom } from '@/store/store';
-import { DataCollection, DataRequest, MethodType } from '@/types/collection';
+import { getAllCollectionsData } from '@/lib/fetch';
+import { collectionsAtom, responseAtom } from '@/store/store';
+import { MethodType } from '@/types/collection';
 import { Editor } from '@monaco-editor/react';
 import axios from 'axios';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 
 import { useEffect, useState } from 'react';
 
@@ -33,6 +33,7 @@ const FormRequest = ({ params }: { params: { slug: string } }) => {
   const [url, setUrl] = useState('');
 
   const setResponse = useSetAtom(responseAtom);
+  const [collections, setCollections] = useAtom(collectionsAtom);
 
   const sendRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,23 +70,30 @@ const FormRequest = ({ params }: { params: { slug: string } }) => {
     domReadOnly: true,
   };
 
-  const getAllData = async (data: DataCollection[]) => {
-    data.map((col) => {
-      getDataRequest(col.id).then((data) => {
-        data.data.map((tes: DataRequest) => {
-          if (params.slug === tes.id) {
-            setMethod(tes.method);
-            setUrl(tes.url);
-          }
-        });
-      });
-    });
+  const getAllData = async () => {
+    const res = await getAllCollectionsData(
+      '5a4f2e4f-4692-4fc9-8767-8d08f6e72d17'
+    );
+    setCollections(res);
   };
 
   useEffect(() => {
-    // GetData();
-    getAllCollection().then((data) => getAllData(data));
+    getAllData();
   }, []);
+
+  useEffect(() => {
+    let found = false;
+
+    collections.forEach((collection) => {
+      collection.items.forEach((request) => {
+        if (!found && params.slug === request.id) {
+          setMethod(request.method);
+          setUrl(request.url);
+          found = true;
+        }
+      });
+    });
+  }, [collections, params.slug]);
 
   return (
     <div className='flex flex-col'>
