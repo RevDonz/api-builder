@@ -35,9 +35,7 @@ export const getDataRequest = async (collectionID: string) => {
   return res.data;
 };
 
-export const getAllCollectionsData = async (
-  userId: string = '5a4f2e4f-4692-4fc9-8767-8d08f6e72d17'
-) => {
+export const getAllCollectionsData = async (userId: string) => {
   try {
     const Collections: DataCollection[] = await getAllCollection(userId);
 

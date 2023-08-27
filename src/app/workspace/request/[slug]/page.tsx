@@ -19,12 +19,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/workspace/ui/select';
-import { getAllCollectionsData } from '@/lib/fetch';
 import { collectionsAtom, responseAtom } from '@/store/store';
 import { MethodType } from '@/types/collection';
 import { Editor } from '@monaco-editor/react';
 import axios from 'axios';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 
 import { useEffect, useState } from 'react';
 
@@ -33,7 +32,7 @@ const FormRequest = ({ params }: { params: { slug: string } }) => {
   const [url, setUrl] = useState('');
 
   const setResponse = useSetAtom(responseAtom);
-  const [collections, setCollections] = useAtom(collectionsAtom);
+  const collections = useAtomValue(collectionsAtom);
 
   const sendRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -70,29 +69,20 @@ const FormRequest = ({ params }: { params: { slug: string } }) => {
     domReadOnly: true,
   };
 
-  const getAllData = async () => {
-    const res = await getAllCollectionsData(
-      '5a4f2e4f-4692-4fc9-8767-8d08f6e72d17'
-    );
-    setCollections(res);
-  };
-
-  useEffect(() => {
-    getAllData();
-  }, []);
-
   useEffect(() => {
     let found = false;
 
-    collections.forEach((collection) => {
-      collection.items.forEach((request) => {
-        if (!found && params.slug === request.id) {
-          setMethod(request.method);
-          setUrl(request.url);
-          found = true;
-        }
+    collections &&
+      collections.forEach((collection) => {
+        collection.items &&
+          collection.items.forEach((request) => {
+            if (!found && params.slug === request.id) {
+              setMethod(request.method);
+              setUrl(request.url);
+              found = true;
+            }
+          });
       });
-    });
   }, [collections, params.slug]);
 
   return (
