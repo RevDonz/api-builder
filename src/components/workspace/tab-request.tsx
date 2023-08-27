@@ -98,7 +98,7 @@ const TabRequest = () => {
         </div>
         <ScrollBar orientation='horizontal' />
       </ScrollArea>
-      {tes.length !== 0 && <Separator orientation='vertical' />}
+      {tes && tes.length > 0 && <Separator orientation='vertical' />}
 
       <div className='mx-2 flex items-center'>
         <Button size={'icon'} variant={'ghost'}>
@@ -124,7 +124,7 @@ const TabRequest = () => {
                   isSend: false,
                 });
               }}
-              disabled={tes.length === 0}
+              disabled={tes && tes.length === 0}
             >
               Close All Tabs
             </DropdownMenuItem>

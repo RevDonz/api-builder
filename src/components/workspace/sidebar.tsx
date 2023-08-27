@@ -39,15 +39,11 @@ import {
 } from './ui/dropdown-menu';
 import { Input } from './ui/input';
 
-interface ISidebar {
-  className: string;
-}
-
 export type AllData = DataCollection & {
   items: DataRequest[];
 };
 
-export default function Sidebar({ className }: ISidebar) {
+export default function Sidebar() {
   const [tes, setTes] = useAtom(tabsAtom);
   const [DataCollections, setDataCollections] = useAtom(collectionsAtom);
 
@@ -94,7 +90,7 @@ export default function Sidebar({ className }: ISidebar) {
   };
 
   return (
-    <div className={cn('bg-gray-800 h-screen', className)}>
+    <div className={cn('bg-gray-800 h-screen flex-1')}>
       <div className='h-16 border-b border-gray-700/50 flex items-center'>
         <DropdownMenu>
           <DropdownMenuTrigger asChild className='mx-3'>

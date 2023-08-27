@@ -17,7 +17,7 @@ export default function WorkspaceLayout({
       <PanelGroup direction='horizontal'>
         <Panel defaultSize={24} minSize={15} className='flex' id={'sidebar'}>
           <Sidemenu />
-          <Sidebar className='flex-1' />
+          <Sidebar />
         </Panel>
         <PanelResizeHandle>
           <div className='cursor-col-resize bg-gray-700/50 hover:bg-indigo-500 h-full w-[3px] flex-grow-0 flex-shrink-0 resize-x'></div>
