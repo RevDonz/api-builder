@@ -107,41 +107,6 @@ export default function Sidebar() {
     }
   };
 
-  const handleEdit = async (id: string) => {
-    try {
-      const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/collection/v1/${id}`,
-        {
-          name: nameUpdate,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (res.status === 200) {
-        const res = await getAllCollectionsData(userId as string);
-        setDataCollections(res);
-        toast({
-          title: 'Success!',
-          description: 'Success delete collection',
-          variant: 'success',
-        });
-      }
-    } catch (e) {
-      toast({
-        title: 'Failed!',
-        description: 'Failed delete collection',
-        variant: 'destructive',
-      });
-      console.log(e);
-    } finally {
-      setNameUpdate('');
-    }
-  };
-
   const handleDelete = async (id: string) => {
     try {
       const res = await axios.delete(
