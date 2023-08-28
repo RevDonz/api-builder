@@ -51,7 +51,7 @@ export default function Sidebar() {
   const { toast } = useToast();
 
   const [nameCollection, setNameCollection] = useState('');
-  const [nameUpdate, setNameUpdate] = useState('');
+
   let userId = '';
   let token = '';
   if (typeof window !== 'undefined') {

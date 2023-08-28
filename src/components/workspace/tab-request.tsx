@@ -71,9 +71,12 @@ const TabRequest = () => {
       <ScrollArea>
         <div className='flex'>
           {tes?.map((data, index) => {
+            const type =
+              data.name === 'Untitled Request' ? 'create' : 'request';
+
             return (
               <Link
-                href={`/workspace/request/${data.id}`}
+                href={`/workspace/${type}/${data.id}`}
                 key={index}
                 className={cn(
                   'items-center gap-5 group flex py-3 px-2 text-sm font-medium bg-gray-900 border-b-2 border-gray-900 text-muted-foreground truncate',

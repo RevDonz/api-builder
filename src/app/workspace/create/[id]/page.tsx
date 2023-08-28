@@ -2,6 +2,14 @@
 
 import { Button } from '@/components/ui/button';
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
   Table,
   TableBody,
   TableCell,
@@ -10,6 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/components/ui/use-toast';
 import { Input } from '@/components/workspace/ui/input';
 import {
   Select,
@@ -18,17 +27,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/workspace/ui/select';
-import { responseAtom } from '@/store/store';
+import { getAllCollectionsData } from '@/lib/fetch';
+import {
+  TabsMenu,
+  collectionsAtom,
+  responseAtom,
+  tabsAtom,
+} from '@/store/store';
 import { MethodType } from '@/types/collection';
 import { Editor } from '@monaco-editor/react';
 import axios from 'axios';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const CreatePage = ({ params }: { params: { id: string } }) => {
   const [method, setMethod] = useState<MethodType>('GET');
   const [url, setUrl] = useState('');
+  const [colName, setColName] = useState('');
+  const [reqName, setReqName] = useState('');
+  const [DataCollections, setDataCollections] = useAtom(collectionsAtom);
+
   const setResponse = useSetAtom(responseAtom);
+  const [tabs, setTabs] = useAtom(tabsAtom);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  let userId = '';
+  let token = '';
+  if (typeof window !== 'undefined') {
+    userId = localStorage.getItem('userId') as string;
+    token = localStorage.getItem('authToken') as string;
+  }
 
   const options = {
     minimap: { enabled: false },
@@ -36,8 +66,7 @@ const CreatePage = ({ params }: { params: { id: string } }) => {
     domReadOnly: true,
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setResponse({
       response: '',
       responseTime: 0,
@@ -65,17 +94,74 @@ const CreatePage = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const handleSave = async () => {
-    
-  }
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/request/v1`,
+        {
+          CollectionID: colName,
+          name: reqName,
+          method: method,
+          bearer_token: '',
+          url: url,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.status === 201) {
+        const newCollections = await getAllCollectionsData(userId as string);
+        setDataCollections(newCollections);
+        handleSubmit();
+        const newAtom: TabsMenu = {
+          id: res.data.data.id,
+          name: res.data.data.name,
+          method: res.data.data.method,
+          url: res.data.data.method,
+        };
+        toast({
+          title: 'Success!',
+          description: 'Success add request',
+          variant: 'success',
+        });
+
+        if (!tabs.some((data) => data.id === newAtom.id)) {
+          const indexToRemove = tabs.findIndex((item) => item.id === params.id);
+
+          if (indexToRemove !== -1) {
+            const newArray = [...tabs];
+            newArray.splice(indexToRemove, 1);
+            setTabs(newArray);
+          }
+          setResponse({
+            response: '',
+            responseTime: 0,
+            status: 0,
+            isSend: false,
+          });
+
+          setTabs((prevState) => [...prevState, newAtom]);
+          router.push(`/workspace/request/${newAtom.id}`);
+        }
+      }
+    } catch (e) {
+      toast({
+        title: 'Failed!',
+        description: 'Failed add request',
+        variant: 'destructive',
+      });
+      console.log(e);
+    }
+  };
 
   return (
     <div className='flex flex-col'>
       <div className='flex w-full'>
-        <form
-          className='flex items-center justify-center w-full'
-          onSubmit={handleSubmit}
-        >
+        <form className='flex items-center justify-center w-full'>
           <Select
             onValueChange={(value) => setMethod(value as MethodType)}
             value={method}
@@ -114,13 +200,69 @@ const CreatePage = ({ params }: { params: { id: string } }) => {
             className='uppercase ml-3'
             variant={'secondary'}
             type='submit'
+            onClick={() => handleSubmit()}
           >
             send
           </Button>
         </form>
-        <Button className='uppercase ml-3' variant={'default'} onClick={handleSave}>
-          save
-        </Button>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className='uppercase ml-3' variant={'default'}>
+              save
+            </Button>
+          </DialogTrigger>
+          <DialogContent className=''>
+            <DialogHeader>
+              <DialogTitle>Add Request</DialogTitle>
+              {/* <DialogDescription>
+                Make changes to your profile here. Click save when you're done.
+              </DialogDescription> */}
+            </DialogHeader>
+            <form onSubmit={handleSave}>
+              <div className='flex flex-col gap-4 py-4'>
+                <div className='flex items-center gap-4'>
+                  <label htmlFor='collection-name' className='text-right w-1/5'>
+                    Collection
+                  </label>
+
+                  <Select
+                    value={colName}
+                    onValueChange={(value) => setColName(value)}
+                  >
+                    <SelectTrigger className='w-full rounded-md'>
+                      <SelectValue placeholder='Collection Name' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DataCollections.map((data, index) => {
+                        return (
+                          <SelectItem value={data.id} key={index}>
+                            {data.name}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className='flex items-center gap-4'>
+                  <label htmlFor='collection-name' className='text-right w-1/5'>
+                    Name
+                  </label>
+                  <Input
+                    id='collection-name'
+                    className='rounded-md'
+                    placeholder='Request Name'
+                    value={reqName}
+                    onChange={(e) => setReqName(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type='submit'>Save changes</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
       <Tabs defaultValue='params' className='w-full mt-5'>
         <TabsList>
