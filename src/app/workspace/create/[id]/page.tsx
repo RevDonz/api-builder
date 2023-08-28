@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -16,57 +18,110 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/workspace/ui/select';
+import { responseAtom } from '@/store/store';
+import { MethodType } from '@/types/collection';
 import { Editor } from '@monaco-editor/react';
+import axios from 'axios';
+import { useSetAtom } from 'jotai';
+import { useState } from 'react';
 
 const CreatePage = ({ params }: { params: { id: string } }) => {
-  console.log(params);
+  const [method, setMethod] = useState<MethodType>('GET');
+  const [url, setUrl] = useState('');
+  const setResponse = useSetAtom(responseAtom);
 
   const options = {
     minimap: { enabled: false },
     formatOnPaste: true,
     domReadOnly: true,
   };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setResponse({
+      response: '',
+      responseTime: 0,
+      status: 0,
+      isSend: false,
+    });
+
+    try {
+      const startTime = new Date();
+      const res = await axios({
+        method: method,
+        url: url,
+      });
+      const endTime = new Date(); // Waktu setelah respons diterima
+      const elapsed = endTime.getTime() - startTime.getTime();
+
+      setResponse({
+        response: JSON.stringify(res, null, '\t'),
+        responseTime: elapsed,
+        status: res.status,
+        isSend: true,
+      });
+    } catch (error: any) {
+      setResponse(error.response.data);
+    }
+  };
+
+  const handleSave = async () => {
+    
+  }
+
   return (
     <div className='flex flex-col'>
-      <form className='flex items-center justify-center'>
-        <Select
-          // onValueChange={(value) => setMethod(value as MethodType)}
-          // value={method}
-          defaultValue='GET'
+      <div className='flex w-full'>
+        <form
+          className='flex items-center justify-center w-full'
+          onSubmit={handleSubmit}
         >
-          <SelectTrigger className='rounded-l-md w-32 mr-[1px]'>
-            <SelectValue placeholder='Method' />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem
-              value='GET'
-              className='text-green-500 hover:text-red-500'
-            >
-              GET
-            </SelectItem>
-            <SelectItem value='POST' className='text-yellow-500'>
-              POST
-            </SelectItem>
-            <SelectItem value='PUT' className='text-blue-500'>
-              PUT
-            </SelectItem>
-            <SelectItem value='DELETE' className='text-red-500'>
-              DEL
-            </SelectItem>
-          </SelectContent>
-        </Select>
+          <Select
+            onValueChange={(value) => setMethod(value as MethodType)}
+            value={method}
+            defaultValue='GET'
+          >
+            <SelectTrigger className='rounded-l-md w-32 mr-[1px]'>
+              <SelectValue placeholder='Method' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                value='GET'
+                className='text-green-500 hover:text-red-500'
+              >
+                GET
+              </SelectItem>
+              <SelectItem value='POST' className='text-yellow-500'>
+                POST
+              </SelectItem>
+              <SelectItem value='PUT' className='text-blue-500'>
+                PUT
+              </SelectItem>
+              <SelectItem value='DELETE' className='text-red-500'>
+                DEL
+              </SelectItem>
+            </SelectContent>
+          </Select>
 
-        <Input
-          type='text'
-          placeholder='Enter URL'
-          className='rounded-r-md w-full'
-          // value={url}
-          // onChange={(e) => setUrl(e.target.value)}
-        />
-        <Button className='uppercase ml-3' variant={'secondary'} type='submit'>
-          send
+          <Input
+            type='text'
+            placeholder='Enter URL'
+            className='rounded-r-md w-full'
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+          <Button
+            className='uppercase ml-3'
+            variant={'secondary'}
+            type='submit'
+          >
+            send
+          </Button>
+        </form>
+        <Button className='uppercase ml-3' variant={'default'} onClick={handleSave}>
+          save
         </Button>
-      </form>
+      </div>
       <Tabs defaultValue='params' className='w-full mt-5'>
         <TabsList>
           <TabsTrigger value='params'>Params</TabsTrigger>
@@ -74,6 +129,7 @@ const CreatePage = ({ params }: { params: { id: string } }) => {
           <TabsTrigger value='headers'>Headers</TabsTrigger>
           <TabsTrigger value='body'>Body</TabsTrigger>
         </TabsList>
+
         <TabsContent value='params'>
           <Table>
             <TableHeader>

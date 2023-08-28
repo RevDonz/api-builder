@@ -509,7 +509,7 @@ export default function Sidebar() {
                             key={index}
                             className='flex'
                           >
-                            <button
+                            <div
                               className={cn(
                                 `flex justify-between items-center group hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500`,
                                 `pl-12`
@@ -537,7 +537,7 @@ export default function Sidebar() {
                               >
                                 <DotsHorizontalIcon className='text-gray-300 h-3 w-3' />
                               </button>
-                            </button>
+                            </div>
                           </Link>
                         );
                       })
