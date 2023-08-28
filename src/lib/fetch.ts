@@ -1,10 +1,10 @@
 import { DataCollection } from '@/types/collection';
 import axios from 'axios';
 
+const token = localStorage.getItem('authToken');
 const apiConfig = {
   headers: {
-    Authorization:
-      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMyMzQ4NDEsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.RkwOc1DiUlNJsaPhTZFFPJD3EdQ5cj_ZQKnlz5IZMfc',
+    Authorization: `Bearer ${token}`,
   },
 };
 

@@ -49,8 +49,11 @@ export default function LoginForm() {
       console.log(response.data);
 
       const authToken = response.data.token;
+      const userId = response.data.data.id;
 
       localStorage.setItem('authToken', authToken);
+      localStorage.setItem('userId', userId);
+
       toast({
         title: 'Success!',
         description: 'Login Success',

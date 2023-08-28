@@ -20,6 +20,7 @@ import { TabsMenu, collectionsAtom, tabsAtom } from '@/store/store';
 import { DataCollection, DataRequest } from '@/types/collection';
 import { DialogClose } from '@radix-ui/react-dialog';
 import {
+  DotsHorizontalIcon,
   MagnifyingGlassIcon,
   PlusIcon,
   TriangleDownIcon,
@@ -28,6 +29,7 @@ import axios from 'axios';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useToast } from '../ui/use-toast';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -46,8 +48,11 @@ export type AllData = DataCollection & {
 export default function Sidebar() {
   const [tes, setTes] = useAtom(tabsAtom);
   const [DataCollections, setDataCollections] = useAtom(collectionsAtom);
+  const { toast } = useToast();
 
   const [nameCollection, setNameCollection] = useState('');
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('authToken');
 
   const handleTabs = (item: DataRequest) => {
     const newAtom: TabsMenu = {
@@ -66,25 +71,64 @@ export default function Sidebar() {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/collection/v1`,
         {
-          userID: '5a4f2e4f-4692-4fc9-8767-8d08f6e72d17',
+          userID: userId,
           name: nameCollection,
         },
         {
           headers: {
-            Authorization:
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTMyMzQ4NDEsInVzZXJJRCI6IjVhNGYyZTRmLTQ2OTItNGZjOS04NzY3LThkMDhmNmU3MmQxNyJ9.RkwOc1DiUlNJsaPhTZFFPJD3EdQ5cj_ZQKnlz5IZMfc',
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
       if (res.status === 201) {
-        const res = await getAllCollectionsData(
-          '5a4f2e4f-4692-4fc9-8767-8d08f6e72d17'
-        );
-
+        const res = await getAllCollectionsData(userId as string);
+        toast({
+          title: 'Success!',
+          description: 'Success add collection',
+          variant: 'success',
+        });
         setDataCollections(res);
       }
     } catch (e) {
+      toast({
+        title: 'Failed!',
+        description: 'Failed add collection',
+        variant: 'destructive',
+      });
+      console.log(e);
+    }
+  };
+
+  const handleEdit = () => {};
+
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/collection/v1/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res);
+
+      if (res.status === 200) {
+        const res = await getAllCollectionsData(userId as string);
+        setDataCollections(res);
+        toast({
+          title: 'Success!',
+          description: 'Success delete collection',
+          variant: 'success',
+        });
+      }
+    } catch (e) {
+      toast({
+        title: 'Failed!',
+        description: 'Failed delete collection',
+        variant: 'destructive',
+      });
       console.log(e);
     }
   };
@@ -371,41 +415,89 @@ export default function Sidebar() {
             if (data != null) {
               return (
                 <AccordionItem value={`item-${data.id}`} key={data.id}>
-                  <AccordionTrigger className=''>{data.name}</AccordionTrigger>
+                  <AccordionTrigger className='group'>
+                    <div className='flex items-center justify-between w-full'>
+                      <p>{data.name}</p>
+
+                      <DropdownMenu>
+                        <DropdownMenuTrigger>
+                          <button
+                            className={`p-1 hover:bg-gray-600 rounded-md mr-2 invisible group-hover:visible`}
+                            onClick={() => console.log('asd')}
+                          >
+                            <DotsHorizontalIcon className='text-gray-300 h-3 w-3' />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align='end'>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleEdit();
+                            }}
+                          >
+                            Edit Collection
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className='text-red-600'
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleDelete(data.id);
+                            }}
+                          >
+                            Delete Collection
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </AccordionTrigger>
                   <AccordionContent>
-                    {data.items &&
+                    {data.items.length > 0 ? (
                       data.items.map((tes, index) => {
                         return (
                           <Link
                             href={`/workspace/request/${tes.id}`}
                             onClick={() => handleTabs(tes)}
                             key={index}
+                            className='flex'
                           >
                             <button
                               className={cn(
-                                'flex hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500',
+                                `flex justify-between items-center group hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500`,
                                 `pl-12`
                               )}
                             >
-                              <p
-                                className={cn(
-                                  'py-1 mr-5 w-7',
-                                  tes.method === 'GET'
-                                    ? 'text-green-500'
-                                    : tes.method === 'POST'
-                                    ? 'text-yellow-500'
-                                    : tes.method === 'PUT'
-                                    ? 'text-blue-500'
-                                    : 'text-red-500'
-                                )}
+                              <div className='flex'>
+                                <p
+                                  className={cn(
+                                    'py-1 mr-5 w-7',
+                                    tes.method === 'GET'
+                                      ? 'text-green-500'
+                                      : tes.method === 'POST'
+                                      ? 'text-yellow-500'
+                                      : tes.method === 'PUT'
+                                      ? 'text-blue-500'
+                                      : 'text-red-500'
+                                  )}
+                                >
+                                  {tes.method === 'DELETE' ? 'DEL' : tes.method}
+                                </p>
+                                <p className='py-1 text-left'>{tes.name}</p>
+                              </div>
+                              <button
+                                className={`p-1 hover:bg-gray-600 rounded-md mr-2 hidden group-hover:block`}
+                                onClick={() => console.log('asd')}
                               >
-                                {tes.method === 'DELETE' ? 'DEL' : tes.method}
-                              </p>
-                              <p className='py-1 text-left'>{tes.name}</p>
+                                <DotsHorizontalIcon className='text-gray-300 h-3 w-3' />
+                              </button>
                             </button>
                           </Link>
                         );
-                      })}
+                      })
+                    ) : (
+                      <p className='pl-12 mt-1 text-xs text-muted-foreground'>
+                        This collection is empty
+                      </p>
+                    )}
                   </AccordionContent>
                 </AccordionItem>
               );
