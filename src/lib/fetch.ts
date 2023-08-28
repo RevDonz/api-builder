@@ -1,7 +1,10 @@
 import { DataCollection } from '@/types/collection';
 import axios from 'axios';
 
-const token = localStorage.getItem('authToken');
+let token = '';
+if (typeof window !== 'undefined') {
+  token = localStorage.getItem('authToken') as string;
+}
 const apiConfig = {
   headers: {
     Authorization: `Bearer ${token}`,

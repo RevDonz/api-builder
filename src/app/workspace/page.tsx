@@ -6,7 +6,10 @@ import { useEffect } from 'react';
 
 const Workspace = () => {
   const setCollections = useSetAtom(collectionsAtom);
-  const userId = localStorage.getItem('userId');
+  let userId = '';
+  if (typeof window !== 'undefined') {
+    userId = localStorage.getItem('userId') as string;
+  }
 
   const getAllData = async () => {
     try {

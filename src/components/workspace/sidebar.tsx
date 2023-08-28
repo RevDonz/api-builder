@@ -51,8 +51,13 @@ export default function Sidebar() {
   const { toast } = useToast();
 
   const [nameCollection, setNameCollection] = useState('');
-  const userId = localStorage.getItem('userId');
-  const token = localStorage.getItem('authToken');
+  const [nameUpdate, setNameUpdate] = useState('');
+  let userId = '';
+  let token = '';
+  if (typeof window !== 'undefined') {
+    userId = localStorage.getItem('userId') as string;
+    token = localStorage.getItem('authToken') as string;
+  }
 
   const handleTabs = (item: DataRequest) => {
     const newAtom: TabsMenu = {
@@ -97,10 +102,45 @@ export default function Sidebar() {
         variant: 'destructive',
       });
       console.log(e);
+    } finally {
+      setNameCollection('');
     }
   };
 
-  const handleEdit = () => {};
+  const handleEdit = async (id: string) => {
+    try {
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/collection/v1/${id}`,
+        {
+          name: nameUpdate,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        const res = await getAllCollectionsData(userId as string);
+        setDataCollections(res);
+        toast({
+          title: 'Success!',
+          description: 'Success delete collection',
+          variant: 'success',
+        });
+      }
+    } catch (e) {
+      toast({
+        title: 'Failed!',
+        description: 'Failed delete collection',
+        variant: 'destructive',
+      });
+      console.log(e);
+    } finally {
+      setNameUpdate('');
+    }
+  };
 
   const handleDelete = async (id: string) => {
     try {
@@ -112,7 +152,6 @@ export default function Sidebar() {
           },
         }
       );
-      console.log(res);
 
       if (res.status === 200) {
         const res = await getAllCollectionsData(userId as string);
@@ -184,7 +223,9 @@ export default function Sidebar() {
                     id='nameCollection'
                     value={nameCollection}
                     className='col-span-3 rounded-md'
-                    onChange={(e) => setNameCollection(e.target.value)}
+                    onChange={(e) => {
+                      setNameCollection(e.target.value);
+                    }}
                   />
                 </div>
               </div>
@@ -420,23 +461,66 @@ export default function Sidebar() {
                       <p>{data.name}</p>
 
                       <DropdownMenu>
-                        <DropdownMenuTrigger>
+                        <DropdownMenuTrigger asChild>
                           <button
                             className={`p-1 hover:bg-gray-600 rounded-md mr-2 invisible group-hover:visible`}
-                            onClick={() => console.log('asd')}
                           >
                             <DotsHorizontalIcon className='text-gray-300 h-3 w-3' />
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align='end'>
-                          <DropdownMenuItem
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleEdit();
+                          <Link
+                            href={{
+                              pathname: '/workspace/update',
+                              query: {
+                                id: data.id,
+                                name: data.name,
+                              },
                             }}
                           >
-                            Edit Collection
-                          </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              {/* <Dialog>
+                              <form>
+                                <DialogTrigger>Update Collection</DialogTrigger>
+                                <DialogContent className='sm:max-w-[425px]'>
+                                  <DialogHeader>
+                                    <DialogTitle>Update Collection</DialogTitle>
+                                  </DialogHeader>
+                                  <div className='grid gap-4 py-4'>
+                                    <div className='grid grid-cols-4 items-center gap-4'>
+                                      <label
+                                        htmlFor='nameUpdate'
+                                        className='text-right text-sm'
+                                      >
+                                        Name
+                                      </label>
+                                      <Input
+                                        id='nameUpdate'
+                                        value={nameUpdate}
+                                        className='col-span-3 rounded-md'
+                                        onChange={(e) => {
+                                          setNameUpdate(e.target.value);
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                  <DialogFooter>
+                                    <DialogClose asChild>
+                                      <Button
+                                        type='submit'
+                                        onClick={() => handleEdit(data.id)}
+                                      >
+                                        Update
+                                      </Button>
+                                    </DialogClose>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </form>
+                            </Dialog> */}
+                              Update Data
+                            </DropdownMenuItem>
+                          </Link>
+
                           <DropdownMenuItem
                             className='text-red-600'
                             onClick={(e) => {
@@ -485,7 +569,6 @@ export default function Sidebar() {
                               </div>
                               <button
                                 className={`p-1 hover:bg-gray-600 rounded-md mr-2 hidden group-hover:block`}
-                                onClick={() => console.log('asd')}
                               >
                                 <DotsHorizontalIcon className='text-gray-300 h-3 w-3' />
                               </button>
