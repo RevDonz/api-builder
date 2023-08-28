@@ -11,6 +11,7 @@ import { FormEvent, useState } from 'react';
 
 const UpdateCollection = () => {
   const searchParams = useSearchParams();
+
   const id = searchParams.get('id');
   const name = searchParams.get('name');
   const [nameUpdate, setNameUpdate] = useState(name as string);
@@ -47,7 +48,7 @@ const UpdateCollection = () => {
           description: 'Success update collection',
           variant: 'success',
         });
-        router.push(`/workspace/request/${id}`);
+        router.back();
       }
     } catch (e) {
       toast({
