@@ -7,13 +7,12 @@ export default function Section3() {
         <h1 className="text-center text-5xl pt-28 pb-10">What is Apidog?</h1>
         <h3 className="text-center pb-10">
           Apidog is a complete set of tools that connects the entire API
-          lifecycle, <br />
-          helping R&D teams implement best practices for API Design-first
-          development.
+          lifecycle, helping R&D teams implement best practices for API
+          Design-first development.
         </h3>
       </div>
       <div className="flex justify-center items-center">
-        <div className="grid grid-cols-2 gap-10">
+        <div className="grid md:grid-cols-2 gap-10 px-12 sm:px-24 lg:px-40 3xl:px-96">
           <div className="flex bg-blue-950 py-10 px-10 rounded-2xl space-x-10">
             <div>
               <button>
@@ -52,9 +51,8 @@ export default function Section3() {
             <div>
               <h2 className="text-3xl pb-5">API Developing Toolkit</h2>
               <p>
-                Design and debug APIs in a powerful visual editor. <br />
-                Describe and debug easily with JSON Schema <br />
-                support.
+                Design and debug APIs in a powerful visual editor. Describe and
+                debug easily with JSON Schema support.
               </p>
             </div>
           </div>
@@ -138,9 +136,9 @@ export default function Section3() {
             <div>
               <h2 className="text-3xl pb-5">Automated Testing Tool</h2>
               <p>
-                Automate API lifecycle with Apidog's test generation <br />
-                from API specs, visual assertion, built-in response <br />
-                validation, and CI/CD.
+                Automate API lifecycle with Apidog's test generation from API
+                specs, visual assertion, built-in response validation, and
+                CI/CD.
               </p>
             </div>
           </div>
@@ -208,9 +206,8 @@ export default function Section3() {
             <div>
               <h2 className="text-3xl pb-5">Online API Documentation</h2>
               <p>
-                Generate visually appealing API documentation, <br />
-                publish to custom domain or securely share with <br />
-                collaborative teams.
+                Generate visually appealing API documentation, publish to custom
+                domain or securely share with collaborative teams.
               </p>
             </div>
           </div>
@@ -277,9 +274,9 @@ export default function Section3() {
             <div>
               <h2 className="text-3xl pb-5">Smart Mock Server</h2>
               <p>
-                Local and cloud mock engine generate reasonable <br />
-                mock data according to field names and <br />
-                specifications without writing scripts.
+                Local and cloud mock engine generate reasonable mock data
+                according to field names and specifications without writing
+                scripts.
               </p>
             </div>
           </div>
