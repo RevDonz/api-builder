@@ -28,7 +28,9 @@ import {
 import axios from 'axios';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { ScrollArea } from '../ui/scroll-area';
 import { useToast } from '../ui/use-toast';
 import { Button } from './ui/button';
 import {
@@ -49,6 +51,8 @@ export default function Sidebar() {
   const [tes, setTes] = useAtom(tabsAtom);
   const [DataCollections, setDataCollections] = useAtom(collectionsAtom);
   const { toast } = useToast();
+  const router = useRouter();
+  const [isDelete, setIsDelete] = useState(false);
 
   const [nameCollection, setNameCollection] = useState('');
 
@@ -134,6 +138,58 @@ export default function Sidebar() {
         variant: 'destructive',
       });
       console.log(e);
+    }
+  };
+
+  const handleDeleteRequest = async (id: string) => {
+    try {
+      setIsDelete(true);
+      const res = await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/request/v1/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.status === 201) {
+        const res = await getAllCollectionsData(userId as string);
+        setDataCollections(res);
+        toast({
+          title: 'Success!',
+          description: 'Success delete request',
+          variant: 'success',
+        });
+        setIsDelete(false);
+        removeTabs(id);
+      }
+    } catch (e) {
+      toast({
+        title: 'Failed!',
+        description: 'Failed delete request',
+        variant: 'destructive',
+      });
+      console.log(e);
+    }
+  };
+
+  const removeTabs = async (id: string) => {
+    const indexToRemove = tes.findIndex((item) => item.id === id);
+
+    if (indexToRemove !== -1) {
+      const newArray = [...tes];
+      newArray.splice(indexToRemove, 1);
+      setTes(newArray);
+    }
+
+    if (indexToRemove !== 0 && tes.length > 1) {
+      router.push(`${tes[indexToRemove - 1].id}`);
+      // console.log(tes[indexToRemove - 1].id);
+    } else if (indexToRemove === 0 && tes.length > 1) {
+      router.push(`${tes[1].id}`);
+    } else {
+      router.push(`/workspace`);
     }
   };
 
@@ -416,144 +472,123 @@ export default function Sidebar() {
         </AccordionItem>
       </Accordion>  */}
       <Accordion type='multiple'>
-        {DataCollections && DataCollections.length > 0 ? (
-          DataCollections.map((data: AllData) => {
-            if (data != null) {
-              return (
-                <AccordionItem value={`item-${data.id}`} key={data.id}>
-                  <AccordionTrigger className='group'>
-                    <div className='flex items-center justify-between w-full'>
-                      <p>{data.name}</p>
+        <ScrollArea className='h-[85vh]'>
+          {DataCollections && DataCollections.length > 0 ? (
+            DataCollections.map((data: AllData) => {
+              if (data != null) {
+                return (
+                  <AccordionItem value={`item-${data.id}`} key={data.id}>
+                    <AccordionTrigger className='group'>
+                      <div className='flex items-center justify-between w-full'>
+                        <p>{data.name}</p>
 
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <button
-                            className={`p-1 hover:bg-gray-600 rounded-md mr-2 invisible group-hover:visible`}
-                          >
-                            <DotsHorizontalIcon className='text-gray-300 h-3 w-3' />
-                          </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <Link
-                            href={{
-                              pathname: '/workspace/update',
-                              query: {
-                                id: data.id,
-                                name: data.name,
-                              },
-                            }}
-                          >
-                            <DropdownMenuItem>
-                              {/* <Dialog>
-                              <form>
-                                <DialogTrigger>Update Collection</DialogTrigger>
-                                <DialogContent className='sm:max-w-[425px]'>
-                                  <DialogHeader>
-                                    <DialogTitle>Update Collection</DialogTitle>
-                                  </DialogHeader>
-                                  <div className='grid gap-4 py-4'>
-                                    <div className='grid grid-cols-4 items-center gap-4'>
-                                      <label
-                                        htmlFor='nameUpdate'
-                                        className='text-right text-sm'
-                                      >
-                                        Name
-                                      </label>
-                                      <Input
-                                        id='nameUpdate'
-                                        value={nameUpdate}
-                                        className='col-span-3 rounded-md'
-                                        onChange={(e) => {
-                                          setNameUpdate(e.target.value);
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  <DialogFooter>
-                                    <DialogClose asChild>
-                                      <Button
-                                        type='submit'
-                                        onClick={() => handleEdit(data.id)}
-                                      >
-                                        Update
-                                      </Button>
-                                    </DialogClose>
-                                  </DialogFooter>
-                                </DialogContent>
-                              </form>
-                            </Dialog> */}
-                              Update Data
-                            </DropdownMenuItem>
-                          </Link>
-
-                          <DropdownMenuItem
-                            className='text-red-600'
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleDelete(data.id);
-                            }}
-                          >
-                            Delete Collection
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    {data.items.length > 0 ? (
-                      data.items.map((tes, index) => {
-                        return (
-                          <Link
-                            href={`/workspace/request/${tes.id}`}
-                            onClick={() => handleTabs(tes)}
-                            key={index}
-                            className='flex'
-                          >
-                            <div
-                              className={cn(
-                                `flex justify-between items-center group hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500`,
-                                `pl-12`
-                              )}
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button
+                              className={`p-1 hover:bg-gray-600 rounded-md mr-2 invisible group-hover:visible`}
                             >
-                              <div className='flex'>
-                                <p
-                                  className={cn(
-                                    'py-1 mr-5 w-7',
-                                    tes.method === 'GET'
-                                      ? 'text-green-500'
-                                      : tes.method === 'POST'
-                                      ? 'text-yellow-500'
-                                      : tes.method === 'PUT'
-                                      ? 'text-blue-500'
-                                      : 'text-red-500'
-                                  )}
-                                >
-                                  {tes.method === 'DELETE' ? 'DEL' : tes.method}
-                                </p>
-                                <p className='py-1 text-left'>{tes.name}</p>
-                              </div>
-                              <button
-                                className={`p-1 hover:bg-gray-600 rounded-md mr-2 hidden group-hover:block`}
+                              <DotsHorizontalIcon className='text-gray-300 h-3 w-3' />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align='end'>
+                            <Link
+                              href={{
+                                pathname: '/workspace/update',
+                                query: {
+                                  id: data.id,
+                                  name: data.name,
+                                },
+                              }}
+                            >
+                              <DropdownMenuItem>Update Data</DropdownMenuItem>
+                            </Link>
+
+                            <DropdownMenuItem
+                              className='text-red-600'
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleDelete(data.id);
+                              }}
+                            >
+                              Delete Collection
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      {data.items.length > 0 ? (
+                        data.items.map((tes, index) => {
+                          return (
+                            <Link
+                              href={`/workspace/request/${tes.id}`}
+                              onClick={() => (!isDelete ? handleTabs(tes) : '')}
+                              key={index}
+                              className='flex'
+                            >
+                              <div
+                                className={cn(
+                                  `flex justify-between items-center group hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500`,
+                                  `pl-12`
+                                )}
                               >
-                                <DotsHorizontalIcon className='text-gray-300 h-3 w-3' />
-                              </button>
-                            </div>
-                          </Link>
-                        );
-                      })
-                    ) : (
-                      <p className='pl-12 mt-1 text-xs text-muted-foreground'>
-                        This collection is empty
-                      </p>
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            }
-          })
-        ) : (
-          <></>
-        )}
+                                <div className='flex'>
+                                  <p
+                                    className={cn(
+                                      'py-1 mr-5 w-7',
+                                      tes.method === 'GET'
+                                        ? 'text-green-500'
+                                        : tes.method === 'POST'
+                                        ? 'text-yellow-500'
+                                        : tes.method === 'PUT'
+                                        ? 'text-blue-500'
+                                        : 'text-red-500'
+                                    )}
+                                  >
+                                    {tes.method === 'DELETE'
+                                      ? 'DEL'
+                                      : tes.method}
+                                  </p>
+                                  <p className='py-1 text-left'>{tes.name}</p>
+                                </div>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <button
+                                      className={`p-1 hover:bg-gray-600 rounded-md mr-2 invisible group-hover:visible`}
+                                    >
+                                      <DotsHorizontalIcon className='text-gray-300 h-3 w-3' />
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align='end'>
+                                    <DropdownMenuItem
+                                      className='text-red-600'
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        handleDeleteRequest(tes.id);
+                                      }}
+                                    >
+                                      Delete Request
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+                            </Link>
+                          );
+                        })
+                      ) : (
+                        <p className='pl-12 mt-1 text-xs text-muted-foreground'>
+                          This collection is empty
+                        </p>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              }
+            })
+          ) : (
+            <></>
+          )}
+        </ScrollArea>
       </Accordion>
     </div>
   );
