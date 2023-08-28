@@ -39,6 +39,7 @@ export default function LoginForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      localStorage.clear();
       const response = await axios.post(
         'https://api-builder-production.up.railway.app/users/v1/login',
         {
