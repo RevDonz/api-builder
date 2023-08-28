@@ -63,22 +63,24 @@ const UpdateCollection = () => {
   };
 
   return (
-    <form
-      className='max-w-screen-sm flex flex-col gap-5'
-      onSubmit={handleSubmit}
-    >
-      <label htmlFor='email'>Collection Name</label>
-      <Input
-        type='text'
-        id='nameUpdate'
-        className='mt-1 rounded-md'
-        value={nameUpdate}
-        onChange={(e) => setNameUpdate(e.target.value)}
-      />
-      <div className=''>
-        <Button type='submit'>Update</Button>
-      </div>
-    </form>
+    <div className=''>
+      <form
+        className='max-w-screen-sm flex flex-col gap-5'
+        onSubmit={handleSubmit}
+      >
+        <label htmlFor='email'>Collection Name</label>
+        <Input
+          type='text'
+          id='nameUpdate'
+          className='mt-1 rounded-md'
+          value={nameUpdate}
+          onChange={(e) => setNameUpdate(e.target.value)}
+        />
+        <div className=''>
+          <Button type='submit'>Update</Button>
+        </div>
+      </form>
+    </div>
   );
 };
 

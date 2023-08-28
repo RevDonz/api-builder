@@ -23,6 +23,7 @@ import {
 const TabRequest = () => {
   const pathname = usePathname();
   const router = useRouter();
+
   const [tes, setTes] = useAtom(tabsAtom);
   const setResponse = useSetAtom(responseAtom);
 
@@ -51,18 +52,37 @@ const TabRequest = () => {
     });
   };
 
+  const addTabs = () => {
+    const newAtom: TabsMenu = {
+      id: Math.floor(10000000 + Math.random() * 90000000).toString(),
+      name: 'Untitled Request',
+      method: 'GET',
+      url: '',
+    };
+
+    if (!tes.some((data) => data.id === newAtom.id)) {
+      setTes((prevState) => [...prevState, newAtom]);
+      router.push(`/workspace/create/${newAtom.id}`);
+    }
+  };
+
   return (
     <div className='flex items-center relative border-b h-12'>
       <ScrollArea>
         <div className='flex'>
           {tes?.map((data, index) => {
+            const type =
+              data.name === 'Untitled Request' ? 'create' : 'request';
+
             return (
               <Link
-                href={`/workspace/request/${data.id}`}
+                href={`/workspace/${type}/${data.id}`}
                 key={index}
                 className={cn(
                   'items-center gap-5 group flex py-3 px-2 text-sm font-medium bg-gray-900 border-b-2 border-gray-900 text-muted-foreground truncate',
                   pathname?.startsWith(`/workspace/request/${data?.id}`) &&
+                    'border-indigo-500 text-foreground',
+                  pathname?.startsWith(`/workspace/create/${data?.id}`) &&
                     'border-indigo-500 text-foreground'
                 )}
               >
@@ -101,9 +121,10 @@ const TabRequest = () => {
       {tes && tes.length > 0 && <Separator orientation='vertical' />}
 
       <div className='mx-2 flex items-center'>
-        <Button size={'icon'} variant={'ghost'}>
+        <Button size={'icon'} variant={'ghost'} onClick={addTabs}>
           <PlusIcon className='h-4 w-4 text-gray-300' />
         </Button>
+
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button size={'icon'} variant={'ghost'} asChild>

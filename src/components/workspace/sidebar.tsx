@@ -51,7 +51,7 @@ export default function Sidebar() {
   const { toast } = useToast();
 
   const [nameCollection, setNameCollection] = useState('');
-  const [nameUpdate, setNameUpdate] = useState('');
+
   let userId = '';
   let token = '';
   if (typeof window !== 'undefined') {
@@ -104,41 +104,6 @@ export default function Sidebar() {
       console.log(e);
     } finally {
       setNameCollection('');
-    }
-  };
-
-  const handleEdit = async (id: string) => {
-    try {
-      const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/collection/v1/${id}`,
-        {
-          name: nameUpdate,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (res.status === 200) {
-        const res = await getAllCollectionsData(userId as string);
-        setDataCollections(res);
-        toast({
-          title: 'Success!',
-          description: 'Success delete collection',
-          variant: 'success',
-        });
-      }
-    } catch (e) {
-      toast({
-        title: 'Failed!',
-        description: 'Failed delete collection',
-        variant: 'destructive',
-      });
-      console.log(e);
-    } finally {
-      setNameUpdate('');
     }
   };
 
@@ -544,7 +509,7 @@ export default function Sidebar() {
                             key={index}
                             className='flex'
                           >
-                            <button
+                            <div
                               className={cn(
                                 `flex justify-between items-center group hover:bg-gray-700 w-full border-l-2 border-gray-800 hover:border-gray-700 focus:border-indigo-500`,
                                 `pl-12`
@@ -572,7 +537,7 @@ export default function Sidebar() {
                               >
                                 <DotsHorizontalIcon className='text-gray-300 h-3 w-3' />
                               </button>
-                            </button>
+                            </div>
                           </Link>
                         );
                       })
