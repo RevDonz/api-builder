@@ -1,9 +1,10 @@
-"use client";
-import { useState } from "react";
+'use client';
+import axios from 'axios';
+import { Eye, EyeOff } from 'heroicons-react';
 import Image from 'next/image';
-import axios from "axios";
-import { Eye, EyeOff } from "heroicons-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useToast } from './ui/use-toast';
 
 export default function LoginForm() {
   const [showPass, setShowPass] = useState(false);
@@ -12,12 +13,19 @@ export default function LoginForm() {
     email: '',
     password: '',
   });
+  const { toast } = useToast();
 
   const Item = ({ icon = '', label = 'label' }) => {
     return (
       <button className='inline-flex text-sm border border-[#2a2a2b] py-3 px-[95px] rounded-lg self-center mt-[20px]'>
         <div className='flex flex-row'>
-          <Image alt='icon' width={20} height={20} src={icon} className='mr-2' />
+          <Image
+            alt='icon'
+            width={20}
+            height={20}
+            src={icon}
+            className='mr-2'
+          />
           <span>{label}</span>
         </div>
       </button>
@@ -31,19 +39,31 @@ export default function LoginForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://api-builder-production.up.railway.app/users/v1/login', {
-        email: userData.email,
-        password: userData.password,
-      });
+      const response = await axios.post(
+        'https://api-builder-production.up.railway.app/users/v1/login',
+        {
+          email: userData.email,
+          password: userData.password,
+        }
+      );
       console.log(response.data);
 
       const authToken = response.data.token;
 
       localStorage.setItem('authToken', authToken);
-
+      toast({
+        title: 'Success!',
+        description: 'Login Success',
+        variant: 'success',
+      });
       router.push('/workspace');
     } catch (err) {
       console.log(err);
+      toast({
+        title: 'Failed!',
+        description: 'Incorrect username or password',
+        variant: 'destructive',
+      });
     }
   };
 
