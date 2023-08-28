@@ -46,6 +46,7 @@ const CreatePage = ({ params }: { params: { id: string } }) => {
   const [url, setUrl] = useState('');
   const [colName, setColName] = useState('');
   const [reqName, setReqName] = useState('');
+  const [payload, setPayload] = useState('');
   const [DataCollections, setDataCollections] = useAtom(collectionsAtom);
 
   const setResponse = useSetAtom(responseAtom);
@@ -63,7 +64,7 @@ const CreatePage = ({ params }: { params: { id: string } }) => {
   const options = {
     minimap: { enabled: false },
     formatOnPaste: true,
-    domReadOnly: true,
+    // domReadOnly: true,
   };
 
   const handleSubmit = async () => {
@@ -105,6 +106,9 @@ const CreatePage = ({ params }: { params: { id: string } }) => {
           method: method,
           bearer_token: '',
           url: url,
+          ...(method === 'POST' || method === 'PUT'
+            ? { payload: JSON.parse(payload) }
+            : {}),
         },
         {
           headers: {
@@ -302,7 +306,13 @@ const CreatePage = ({ params }: { params: { id: string } }) => {
         <TabsContent value='headers'>Headers</TabsContent>
         <TabsContent value='body'>
           <div className='h-96 w-full flex flex-col gap-5 border-2 border-gray-800 rounded'>
-            <Editor defaultLanguage='json' theme='vs-dark' options={options} />
+            <Editor
+              defaultLanguage='json'
+              theme='vs-dark'
+              options={options}
+              onChange={(value) => setPayload(value as string)}
+              value={payload}
+            />
           </div>
         </TabsContent>
       </Tabs>

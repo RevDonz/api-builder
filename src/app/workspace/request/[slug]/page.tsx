@@ -30,6 +30,7 @@ import { useEffect, useState } from 'react';
 const FormRequest = ({ params }: { params: { slug: string } }) => {
   const [method, setMethod] = useState<MethodType>('GET');
   const [url, setUrl] = useState('');
+  const [payload, setPayload] = useState('');
 
   const setResponse = useSetAtom(responseAtom);
   const collections = useAtomValue(collectionsAtom);
@@ -45,15 +46,20 @@ const FormRequest = ({ params }: { params: { slug: string } }) => {
 
     try {
       const startTime = new Date();
+
       const res = await axios({
         method: method,
         url: url,
+
+        ...(method === 'POST' || method === 'PUT'
+          ? { data: JSON.parse(payload) }
+          : {}),
       });
       const endTime = new Date(); // Waktu setelah respons diterima
       const elapsed = endTime.getTime() - startTime.getTime();
 
       setResponse({
-        response: JSON.stringify(res, null, '\t'),
+        response: JSON.stringify(res.data, null, '\t'),
         responseTime: elapsed,
         status: res.status,
         isSend: true,
@@ -163,7 +169,13 @@ const FormRequest = ({ params }: { params: { slug: string } }) => {
         <TabsContent value='headers'>Headers</TabsContent>
         <TabsContent value='body'>
           <div className='h-96 w-full flex flex-col gap-5 border-2 border-gray-800 rounded'>
-            <Editor defaultLanguage='json' theme='vs-dark' options={options} />
+            <Editor
+              defaultLanguage='json'
+              theme='vs-dark'
+              options={options}
+              value={payload}
+              onChange={(value) => setPayload(value as string)}
+            />
           </div>
         </TabsContent>
       </Tabs>
