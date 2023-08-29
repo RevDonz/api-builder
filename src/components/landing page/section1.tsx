@@ -30,11 +30,12 @@ export default function Section1() {
             <svg
               fill="none"
               stroke="currentColor"
-              stroke-width="3"
+              strokeWidth="3"
               viewBox="0 4 19 24"
               width={17}
               xmlns="http://www.w3.org/2000/svg"
               aria-hidden="true"
+              className="mr-1 text-indigo-400 transition-colors duration-300 ease-in-out transform hover:scale-110"
             >
               <path
                 stroke-linecap="round"
@@ -48,11 +49,12 @@ export default function Section1() {
             <svg
               fill="none"
               stroke="currentColor"
-              stroke-width="3"
+              strokeWidth="3"
               viewBox="0 4 19 24"
               width={17}
               xmlns="http://www.w3.org/2000/svg"
               aria-hidden="true"
+              className="mr-1 text-indigo-400 transition-colors duration-300 ease-in-out transform hover:scale-110"
             >
               <path
                 stroke-linecap="round"
@@ -66,7 +68,7 @@ export default function Section1() {
         <div>
           <div className="flex space-x-4">
             <div>
-              <button className=" flex px-6 py-3 rounded bg-violet-400 hover:bg-violet-500 text-white">
+              <button className="flex px-6 py-3 rounded bg-violet-400 hover:bg-violet-500 text-white transition-colors duration-300 ease-in-out transform hover:scale-110">
                 <svg
                   fill="none"
                   stroke="currentColor"

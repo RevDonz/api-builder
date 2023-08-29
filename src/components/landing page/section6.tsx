@@ -13,7 +13,7 @@ export default function Section6() {
         </h3>
       </div>
       <div className="flex justify-center items-center">
-        <div className="grid grid-cols-3 gap-9 px-32">
+        <div className="grid gap-10 md:grid-cols-2 px-12 sm:px-24 sm:grid-cols-2 lg:px-40 lg:grid-cols-3 3xl:px-96">
           <div className="bg-blue-950 py-10 px-10 rounded-2xl">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +106,7 @@ export default function Section6() {
                 </linearGradient>
               </defs>
             </svg>
-            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4">
+            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4 text-white">
               Multi-protocol Support
             </h2>
             <p>
@@ -191,7 +191,7 @@ export default function Section6() {
                 </linearGradient>
               </defs>
             </svg>
-            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4">
+            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4 text-white">
               Design while Debugging
             </h2>
             <p>
@@ -266,7 +266,7 @@ export default function Section6() {
                 </linearGradient>
               </defs>
             </svg>
-            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4">
+            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4 text-white">
               Apidog IDEA plugin
             </h2>
             <p>
@@ -346,7 +346,7 @@ export default function Section6() {
                 </linearGradient>
               </defs>
             </svg>
-            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4">
+            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4 text-white">
               Connect to Databases
             </h2>
             <p>
@@ -418,7 +418,7 @@ export default function Section6() {
                 </linearGradient>
               </defs>
             </svg>
-            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4">
+            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4 text-white">
               Compatible with Postman
             </h2>
             <p>
@@ -515,7 +515,7 @@ export default function Section6() {
                 </linearGradient>
               </defs>
             </svg>
-            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4">
+            <h2 className="text-2xl text-secondary font-semibold mt-6 mb-4 text-white">
               API Hub
             </h2>
             <p>
@@ -523,6 +523,7 @@ export default function Section6() {
               the API Hub, and also publish your own APIs to the API Hub.
             </p>
           </div>
+          <div></div>
         </div>
       </div>
     </section>

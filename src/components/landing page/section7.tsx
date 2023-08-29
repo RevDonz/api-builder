@@ -20,7 +20,7 @@ export default function Section7() {
         </h3>
       </div>
       <div className="justify-center items-center">
-        <div className="grid grid-cols-2 gap-9 px-32">
+        <div className="grid gap-10 sm:px-24 px-5 lg:px-40 md:grid-cols-2">
           <div className="bg-blue-950 py-10 px-10 rounded-2xl">
             <p>
               “Apidog has helped me realize the advantages of taking an API
@@ -28,7 +28,7 @@ export default function Section7() {
               Apidog's response validation tool enables me to quickly catch and
               fix errors, which boosts my productivity and saves me time.”
             </p>
-            <div className="flex space-x-64">
+            <div className="flex space-x-44">
               <div className="flex pt-6 space-x-4">
                 <Image src={Jason} alt="jason" width={48} height={48} />
                 <div>
@@ -60,7 +60,7 @@ export default function Section7() {
               modify my test cases each time, which used to be the most tedious
               part of my work.”
             </p>
-            <div className="flex space-x-80">
+            <div className="flex space-x-44">
               <div className="flex pt-6 space-x-4">
                 <Image src={Halima} alt="jason" width={48} height={48} />
                 <div>
@@ -85,7 +85,7 @@ export default function Section7() {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-9 pt-9 px-32">
+        <div className="grid sm:grid-cols-3 gap-10 pt-9 px-5 lg:px-40 md:grid-cols-3">
           <div className="bg-blue-950 py-10 px-10 rounded-2xl">
             <p>
               “I don't have to concatenate API request parameters or fabricate
@@ -93,7 +93,7 @@ export default function Section7() {
               readily available, and just a single click solves all the painful
               issues.”
             </p>
-            <div className="flex space-x-14">
+            <div className="flex space-x-3">
               <div className="flex pt-6 space-x-4">
                 <Image src={Ricardo} alt="jason" width={48} height={48} />
                 <div>
@@ -123,7 +123,7 @@ export default function Section7() {
               focus on creating high-quality APIs and delivering exceptional
               products.”
             </p>
-            <div className="flex space-x-16">
+            <div className="flex space-x-10">
               <div className="flex pt-6 space-x-4">
                 <Image src={Olawale} alt="jason" width={48} height={48} />
                 <div>
@@ -153,7 +153,7 @@ export default function Section7() {
               because they have found it enhances the efficiency of every team
               member. ”
             </p>
-            <div className="flex space-x-24">
+            <div className="flex space-x-9">
               <div className="flex pt-6 space-x-4">
                 <Image src={Maria} alt="jason" width={48} height={48} />
                 <div>

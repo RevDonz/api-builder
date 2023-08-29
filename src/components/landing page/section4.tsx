@@ -14,18 +14,18 @@ export default function Section4() {
 
   return (
     <section className="bg-black text-white">
-      <div>
-        <h1 className="text-center text-5xl pt-28 pb-10">
+      <div className="px-6 md:px-20 lg:px-32 xl:px-60">
+        <h1 className="text-center text-5xl pt-16 md:pt-28 pb-6 md:pb-10">
           Efficient API development platform
         </h1>
-        <h3 className="text-center">
+        <h3 className="text-center pb-10">
           Quality tools have the power to unite your entire team, while ensuring
           that no task is needlessly repeated.
         </h3>
       </div>
       <div className="relative flex justify-center py-16 space-x-36">
-        <div className="flex space-x-12">
-          <div>
+        <div className="flex flex-col md:flex-row md:space-x-12 md:px-20">
+          <div className="md:w-1/2 mt-10 md:mt-0 order-2 md:order-1">
             <p className="text-indigo-600">API Developing Toolkit</p>
             <h1 className="text-5xl py-14">
               Design & Develop <br /> APIs Faster & <br /> Together
@@ -35,7 +35,7 @@ export default function Section4() {
               JSON/XML schemas with a simple click.
             </p>
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-end md:w-1/2 order-1 md:order-2">
             <Image
               src="/feature-design.webp"
               alt="design"
@@ -44,7 +44,7 @@ export default function Section4() {
             />
           </div>
         </div>
-        <div className="absolute mt-96 mr-11" data-aos="fade-up">
+        <div className="absolute mt-40 mr-11" data-aos="fade-up">
           <Image
             src={featureDesign}
             alt="Feature Design"

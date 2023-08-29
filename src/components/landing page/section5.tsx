@@ -11,8 +11,8 @@ export default function Section5() {
         </h1>
         <h3 className="text-center">
           Apidog implements API Design-first, facilitating the effortless
-          synchronization of API, <br />
-          specifications and modifications across the entire API lifecycle.
+          synchronization of API, specifications and modifications across the
+          entire API lifecycle.
         </h3>
       </div>
       <div className="flex justify-center items-center">
