@@ -289,15 +289,27 @@ const CreatePage = ({ params }: { params: { id: string } }) => {
             <TableBody>
               <TableRow>
                 <TableCell></TableCell>
-                <TableCell className='font-medium'>INV001</TableCell>
-                <TableCell>
+                <TableCell className='font-medium'>
                   <input
                     type='text'
                     className='bg-transparent outline-none border border-transparent focus:border-gray-7 00 p-1 w-full'
                     placeholder='key'
                   />
                 </TableCell>
-                <TableCell>Credit Card</TableCell>
+                <TableCell>
+                  <input
+                    type='text'
+                    className='bg-transparent outline-none border border-transparent focus:border-gray-7 00 p-1 w-full'
+                    placeholder='value'
+                  />
+                </TableCell>
+                <TableCell>
+                  <input
+                    type='text'
+                    className='bg-transparent outline-none border border-transparent focus:border-gray-7 00 p-1 w-full'
+                    placeholder='description'
+                  />
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
